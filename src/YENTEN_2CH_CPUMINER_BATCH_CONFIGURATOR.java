@@ -80,6 +80,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private JButton SaveBAT;
 	
 	private JButton CloseMiners;
+	private String PoolDefault;
 	
 	public YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR(String windowName) {
 		JFrame wid = new JFrame(windowName);
@@ -100,15 +101,17 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private void Init(final JFrame window) {
 		SettingsName = "cpu-miner-batch-configurator";
 		userPrefs = Preferences.userRoot().node(SettingsName);
+		PoolDefault = "stratum+tcp://yenten-pool.info:63368";
 		
 		cores = Runtime.getRuntime().availableProcessors();
 				 
 		 StartMining = new JButton("Start Mining");  
 		 StartMining.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
-           	  	StartMiningAction();
+           	  	StartMiningAction(window);
              }
          });
+		 StartMining.setToolTipText("Launch cpuminer with current settings");
 		 
 		 DefaultSettings = new JButton("Default Settings");
 		 DefaultSettings.addActionListener(new ActionListener() {
@@ -116,6 +119,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
            	 	SetDefaultSettings();
              }
          });
+		 DefaultSettings.setToolTipText("Clear all fields");
 			 
 		 AddPool = new JButton("Add");
 		 AddPool.addActionListener(new ActionListener() {
@@ -124,15 +128,18 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 			 }
 		 });
 		 AddPool.setMargin(new Insets(2, 0, 2, 0));
+		 AddPool.setToolTipText("Add new Pool");
 		 
 		 Benchmark = new JButton("Start Benchmark");
 		 Benchmark.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 StartBenchmark();
+				 StartBenchmark(window);
 			 }
 		 });
+		 Benchmark.setToolTipText("Test your PC");
 		 
 		 DebugCheck = new JCheckBox("Debug");
+		 DebugCheck.setToolTipText("Output cpuminer debug info");
 		 
 		 HideCPU = new JCheckBox("Hide CPU hashmeter output");
 		 
@@ -143,6 +150,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 HideDiff = new JCheckBox("Don't display diff");
 		 
 		 BackgroundMode = new JCheckBox("Background mode");
+		 BackgroundMode.setToolTipText("Run miner without console");
 		 
 		 String[] NumberCoresValues = new String[cores];
 		 for(int i=1;i<=cores;i++) {
@@ -150,7 +158,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 }
 		 NumberThreads = new JComboBox<String>(NumberCoresValues);
 		 NumberThreads.setSelectedIndex(cores-1);
-		 NumberThreads.setToolTipText("Number of threads");
+		 NumberThreads.setToolTipText("Number of threads to mining");
 	     
 	     NumberThreadsLabel = new JLabel("Number of threads");
 		 
@@ -160,46 +168,57 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	     
 	     AlghorytmLabel = new JLabel ("Alghorytm");
 	     
-	     String[] PoolList = new String[] {"stratum+tcp://yenten-pool.info:63368"};
+	     String[] PoolList = new String[] {PoolDefault};
 	     Pool = new JComboBox<String>(PoolList);
-	     Pool.setToolTipText("Select Pool");
+	     Pool.setToolTipText("Select Pool or Add New Pool Adress");
 	     Pool.setEditable(false);
-	   
 	     PoolLabel = new JLabel ("Pool");
-	     
+
 	     String[] PriorityList = new String[] {"[0] IDLE","[1] BELOW NORMAL","[2] NORMAL","[3] ABOVE NORMAL","[4] HIGH","[5] REALTIME"};
 	     CPUPriority = new JComboBox<String>(PriorityList);
-	     CPUPriority.setToolTipText("CPU Priority");
+	     CPUPriority.setToolTipText("Set cpuminer process priority");
 	     CPUPriority.setSelectedIndex(2);
 	     
 	     CPUPriorityLabel = new JLabel ("Miner Priority");
 	     
 	     WalletAdress = new JTextField("");
 	     WalletAdressLabel = new JLabel("Wallet/Username");
+	     WalletAdress.setToolTipText("Enter your Wallet Adress or your Worker Username");
 	     
 	     NamePC = new JTextField("");
 	     NamePCLabel = new JLabel("PC Name");
+	     NamePC.setToolTipText("Enter any worker nick");
 	     	     
 		 Pause = new JCheckBox("Pause after crash");
+		 Pause.setToolTipText("if cpuminer will crash set not close console");
+		 
 		 InfiniteLoop = new JCheckBox("Infinite Loop");
+		 InfiniteLoop.setToolTipText("if cpuminer will crash he will continue working");
+		 
 		 Password = new JTextField("");
+		 Password.setToolTipText("Enter pool password or user password or nothing");
 		 PasswordLabel = new JLabel("Password");
+		 
 		 TimeStratumLabel = new JLabel("Timeout/Stratum (sec)");
 		 TimeStratum = new JSpinner(new SpinnerNumberModel(300, 30, null, 30));
+		 TimeStratum.setToolTipText("Set timeout of one long job calculation and stratum");
+		 
 		 SaveBAT = new JButton("Save BAT File");
 		 SaveBAT.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
 				 SaveBATFile(window);
 			 }
 		 });
+		 SaveBAT.setToolTipText("Save BAT File on computer");
 		 
 		 CloseMiners = new JButton("Close All Miners");
 		 CloseMiners.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 CloseMinersCommand();
+				 CloseMinersCommand(window);
 			 }
 		 });
-	     
+		 CloseMiners.setToolTipText("Close All Running Miners");
+		 
 	     LoadSettings();
 	        
 	     WindowInterfacePlacement(window);
@@ -430,6 +449,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	    if (result == JOptionPane.OK_OPTION && NewPoolName.getText().length()>0) {
 	        Pool.addItem(NewPoolName.getText());
 	        Pool.setSelectedIndex(Pool.getItemCount()-1);
+	        UpdateCommand();
 	    } else {
 	        log ("cancel");
 	    }
@@ -455,7 +475,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		dataOutputStream.close();
 	}
 
-	private void CloseMinersCommand() {
+	private void CloseMinersCommand(JFrame win) {
 		try {
 		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer.exe");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-aes-sse42.exe");
@@ -464,29 +484,45 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-avx2-sha.exe");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-sse2.exe");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cmd.exe");
+		 		JOptionPane.showMessageDialog(win,
+	 			    "All your miners closed.",
+	 			    "Close Miners",
+	 			    JOptionPane.WARNING_MESSAGE);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}
 	
-	private void StartMiningAction() {
+	private void StartMiningAction(JFrame win) {
 		try {
  		  SaveSettings();
  		  CreateBat("start_mining.bat");
  		  String path="cmd /c start start_mining.bat";
  		  Runtime rn=Runtime.getRuntime();
  		  rn.exec(path);
+ 		  if (BackgroundMode.isSelected()==true) {
+ 			 JOptionPane.showMessageDialog(win,
+			    "You start miner in background!",
+			    "Warning",
+			    JOptionPane.WARNING_MESSAGE);
+ 		  }
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
 	
-	private void StartBenchmark() {
+	private void StartBenchmark(JFrame win) {
 		try {
 			SaveSettings();
-			String path="cmd /c start " + CommandOutput + " --benchmark ";
+			String path="cmd /c start \"\" " + CommandOutput + " --benchmark ";
 			Runtime rn=Runtime.getRuntime();
-	 		  rn.exec(path);
+	 		rn.exec(path);
+	 		 if (BackgroundMode.isSelected()==true) {
+	 			 JOptionPane.showMessageDialog(win,
+				    "You start miner in background!",
+				    "Warning",
+				    JOptionPane.WARNING_MESSAGE);
+	 		  }
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -520,7 +556,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		NumberThreads.setSelectedIndex(cores-1);
 		ApportionCPU.setSelected(false);
 		Alghorytm.setSelectedIndex(0);
-		Pool.setSelectedItem("stratum+tcp://yenten-pool.info:63368");
+		Pool.setSelectedItem(PoolDefault);
 		WalletAdress.setText("");
 		NamePC.setText("");
 		CPUPriority.setSelectedIndex(2);
@@ -540,7 +576,6 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		NumberThreads.setSelectedIndex(userPrefs.getInt("numberthreads", cores-1));
 		ApportionCPU.setSelected(userPrefs.getBoolean("apportioncpu", false));
 		Alghorytm.setSelectedIndex(userPrefs.getInt("alghorytm", 0));
-		Pool.setSelectedItem(userPrefs.get("pool", "stratum+tcp://yenten-pool.info:63368"));
 		WalletAdress.setText(userPrefs.get("walletadress", ""));
 		NamePC.setText(userPrefs.get("namepc", ""));
 		CPUPriority.setSelectedIndex(userPrefs.getInt("cpupriority", 2));
@@ -549,6 +584,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		InfiniteLoop.setSelected(userPrefs.getBoolean("infiniteloop", false));
 		Password.setText(userPrefs.get("password", ""));
 		TimeStratum.setValue(Integer.parseInt(userPrefs.get("timestratum", "300")));
+		
+		String[] PoolsList = userPrefs.get("pools", PoolDefault).split("@");
+		for (int i=0;i<PoolsList.length;i++) {
+			Pool.addItem(PoolsList[i]);
+		}
+		
+		String PoolItemName = userPrefs.get("pool", PoolDefault);
+		Pool.setSelectedItem(PoolItemName);
 	}
 
 	private void SaveSettings() {	
@@ -559,7 +602,6 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		userPrefs.putBoolean("backgroundmode", BackgroundMode.isSelected());
 		userPrefs.putInt("numberthreads", NumberThreads.getSelectedIndex());
 		userPrefs.putInt("alghorytm", Alghorytm.getSelectedIndex());
-		userPrefs.put("pool", Pool.getSelectedItem().toString());
 		userPrefs.put("walletadress", WalletAdress.getText());
 		userPrefs.put("namepc", NamePC.getText());
 		userPrefs.putInt("cpupriority", CPUPriority.getSelectedIndex());
@@ -568,6 +610,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		userPrefs.putBoolean("infiniteloop", InfiniteLoop.isSelected());
 		userPrefs.put("password", Password.getText());
 		userPrefs.put("timestratum", TimeStratum.getValue().toString());
+		StringBuilder Pools = new StringBuilder();
+		for (int i = 0; i < Pool.getItemCount(); i++) {
+			if (Pool.getItemAt(i)!=PoolDefault) {
+				Pools.append(Pool.getItemAt(i)).append("@");
+			}
+		}
+		userPrefs.put("pools", Pools.toString());
+		userPrefs.put("pool", Pool.getSelectedItem().toString());
 	}
 	
 	private void ExportSettings() {
