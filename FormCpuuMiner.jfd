@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_24" class="java.beans.XMLDecoder"> 
+ <object class="com.jformdesigner.model.FormModel"> 
+  <void property="contentType"> 
+   <string>form/swing</string> 
+  </void> 
+  <void property="root"> 
+   <object class="com.jformdesigner.model.FormRoot"> 
+    <void method="add"> 
+     <object class="com.jformdesigner.model.FormWindow"> 
+      <string>javax.swing.JFrame</string> 
+      <object class="com.jformdesigner.model.FormLayoutManager"> 
+       <class>org.jdesktop.layout.GroupLayout</class> 
+       <void method="setProperty"> 
+        <string>$horizontalGroup</string> 
+        <string>par l {seq {space :p:6:p, par t {seq {par l {par l:t {comp button1::t::153:x:1, comp StartMining::t::153:x:1}, comp HideDiff::l:p::p:1, comp HideCPU::l:p::p:1}, space :::p, par l {comp Pause::l:p::p:1, comp Benchmark::::146:x:1, comp SaveBAT::l::146:x:1, comp InfiniteLoop:::p::p}, par t {seq {space s:::p, par l {comp DebugCheck:::p::p:1, comp BackgroundMode:::p::p:1}, space ::4:x}, seq {space u:::p, comp DefaultSettings:::p:138:p:1}}}, seq l:::1 {comp PoolLabel:::p::p, space :::p, comp Pool::::363:x, space :::p, comp AddPool:::p:57:p}, seq t {par l {comp WalletAdressLabel::l:p::p:1, comp NamePCLabel:::p::p:1, comp PasswordLabel:::p::p, comp CPUPriorityLabel:::p::p:1, comp NumberThreadsLabel:::p::p:1}, space :::p, par l {seq {par l {comp NamePC::l::158:x:1, seq l {par t:::p {comp Password::l:::x:1, comp CPUPriority::l:::x:1, comp NumberThreads::l::155:x:1}, space :::p}}, par l {seq {space :p:5:p, comp AlghorytmLabel:::p::p, space :::p, comp Alghorytm:::p:117:p:1}, seq l {space u:::p, comp ApportionCPU:::p::p:1}}}, comp WalletAdress::::343:x:1}}, seq l {comp TimeStratumLabel:::p::p, space :::p, comp TimeStratum:::p:82:p}}, space :p:40:p}, seq l {space :::p, comp NoColor:::p::p:1, space ::343:x}}</string> 
+       </void> 
+       <void method="setProperty"> 
+        <string>$verticalGroup</string> 
+        <string>par l {seq t {space :p::p, par b {comp Pool::b:::x:1, comp PoolLabel::b:p::p, comp AddPool::b:p:26:p}, space :::p, par b {comp WalletAdressLabel::b:p::p, comp WalletAdress::b:p::p}, space :::p, par t {comp NamePCLabel::l:p::p, par b {comp NamePC::b:p::p:1, comp AlghorytmLabel::b:p::p, comp Alghorytm::b:0:0:x:1}}, space :::p, par b {comp PasswordLabel::b:p::p, comp Password::b:p::p}, space u:::p, par b {comp CPUPriorityLabel::b:p::p:1, comp CPUPriority::b:p:20:p:1}, space u:::p, par b {comp NumberThreadsLabel::b:p::p, comp NumberThreads::b:p:20:p, comp ApportionCPU::b:p::p:1}, space :::p, par t {seq {par l {comp TimeStratumLabel:::p::p, comp TimeStratum::l:p:20:p}, space s:::p, comp NoColor:::p:19:p, space :::p, par b {comp InfiniteLoop::b:p:19:p, comp HideCPU::b:p:19:p}}, comp DebugCheck::t:p:16:p}, space :::p, par b {comp BackgroundMode::b:p:21:p:1, comp Pause::b:p::p, comp HideDiff::b:p:19:p:1}, space :::p, par b {comp StartMining::b:p::p:1, comp SaveBAT::b:::x:1}, space :::p, par b {comp button1::b:p::p, comp Benchmark::b:p::p:1, comp DefaultSettings::b:p::p:1}, space :::p}}</string> 
+       </void> 
+      </object> 
+      <void method="setProperty"> 
+       <string>resizable</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="setProperty"> 
+       <string>$locationPolicy</string> 
+       <int>2</int> 
+      </void> 
+      <void method="setProperty"> 
+       <string>$sizePolicy</string> 
+       <int>1</int> 
+      </void> 
+      <void method="setProperty"> 
+       <string>background</string> 
+       <object class="java.awt.Color" field="lightGray"/> 
+      </void> 
+      <void method="setProperty"> 
+       <string>foreground</string> 
+       <object class="java.awt.Color" field="black"/> 
+      </void> 
+      <void method="setProperty"> 
+       <string>title</string> 
+       <string>YENTEN 2CH CPUMINER BATCH CONFIGURATOR</string> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Pool</string> 
+        </void> 
+        <void property="name"> 
+         <string>PoolLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>Pool</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Alghorytm</string> 
+        </void> 
+        <void property="name"> 
+         <string>AlghorytmLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>Alghorytm</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Wallet/Username</string> 
+        </void> 
+        <void property="name"> 
+         <string>WalletAdressLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>WalletAdress</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Name PC</string> 
+        </void> 
+        <void property="name"> 
+         <string>NamePCLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>NamePC</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>NumberThreads</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Number of Threads</string> 
+        </void> 
+        <void property="name"> 
+         <string>NumberThreadsLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Miner Priority</string> 
+        </void> 
+        <void property="name"> 
+         <string>CPUPriorityLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>CPUPriority</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Apportion CPU</string> 
+        </void> 
+        <void property="name"> 
+         <string>ApportionCPU</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Hide CPU Hashmeter</string> 
+        </void> 
+        <void property="name"> 
+         <string>HideCPU</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Disable colored output</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object class="java.awt.Insets"> 
+          <int>2</int> 
+          <int>0</int> 
+          <int>2</int> 
+          <int>2</int> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>NoColor</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Don&apos;t display diff</string> 
+        </void> 
+        <void property="name"> 
+         <string>HideDiff</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Background mode</string> 
+        </void> 
+        <void property="name"> 
+         <string>BackgroundMode</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Start miner</string> 
+        </void> 
+        <void property="name"> 
+         <string>StartMining</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Default Settings</string> 
+        </void> 
+        <void property="name"> 
+         <string>DefaultSettings</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Add</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object class="java.awt.Color"> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>255</int> 
+         </object> 
+        </void> 
+        <void method="setProperty"> 
+         <string>icon</string> 
+         <object class="com.jformdesigner.model.FormObject" field="NULL_VALUE"/> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object class="java.awt.Insets"> 
+          <int>2</int> 
+          <int>0</int> 
+          <int>2</int> 
+          <int>0</int> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>AddPool</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Debug</string> 
+        </void> 
+        <void property="name"> 
+         <string>DebugCheck</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Pause after crash</string> 
+        </void> 
+        <void property="name"> 
+         <string>Pause</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Infinite Loop</string> 
+        </void> 
+        <void property="name"> 
+         <string>InfiniteLoop</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Start benchmark</string> 
+        </void> 
+        <void property="name"> 
+         <string>Benchmark</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>Password</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Password</string> 
+        </void> 
+        <void property="name"> 
+         <string>PasswordLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Timeout/Stratum (sec)</string> 
+        </void> 
+        <void property="name"> 
+         <string>TimeStratumLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JSpinner</string> 
+        <void method="setProperty"> 
+         <string>model</string> 
+         <object class="javax.swing.SpinnerNumberModel"> 
+          <void property="minimum"> 
+           <int>30</int> 
+          </void> 
+          <void property="stepSize"> 
+           <int>30</int> 
+          </void> 
+          <void property="value"> 
+           <int>300</int> 
+          </void> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>TimeStratum</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Save BAT File</string> 
+        </void> 
+        <void property="name"> 
+         <string>SaveBAT</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Close All Miners</string> 
+        </void> 
+        <void property="name"> 
+         <string>button1</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void property="name"> 
+       <string>this</string> 
+      </void> 
+     </object> 
+     <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+      <null/> 
+      <void method="setProperty"> 
+       <string>location</string> 
+       <object class="java.awt.Point"> 
+        <int>115</int> 
+        <int>0</int> 
+       </object> 
+      </void> 
+      <void method="setProperty"> 
+       <string>size</string> 
+       <object class="java.awt.Dimension"> 
+        <int>485</int> 
+        <int>390</int> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 
