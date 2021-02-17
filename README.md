@@ -10,3 +10,5 @@
 Screenshot:
 
 <img src=https://i.imgur.com/4kojEqE.png>
+
+VirusTotal <a href=https://www.virustotal.com/gui/file/f273bd6115ad1cbc16de2e5001680d9ddead31440d5a95ab9dfbe33ea75fce92/detection>check</a>
