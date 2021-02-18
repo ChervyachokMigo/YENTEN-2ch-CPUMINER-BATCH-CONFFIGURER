@@ -5,7 +5,7 @@
 
 <h2>v0.124 Windows x64 Release build</h2>
 
-> <a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/tag/YENTEN>Download</a>
+> <a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/tag/v0.124>Download</a>
 
 Screenshot:
 
