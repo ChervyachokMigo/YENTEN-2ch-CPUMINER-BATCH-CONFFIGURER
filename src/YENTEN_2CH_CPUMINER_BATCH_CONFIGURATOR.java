@@ -36,10 +36,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.text.DefaultFormatter; 
+import javax.swing.text.DefaultFormatter;
+/*
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.HardwareAbstractionLayer; */
 
 public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
-	private JCheckBox HideCPU;
+	private JCheckBox ShowCPU;
 	private JCheckBox NoColor;
 	private JComboBox<String> NumberThreads;
 	private JComboBox<String> Alghorytm;
@@ -48,7 +52,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private JTextField WalletAdress;
 	private JTextField NamePC;
 	private JCheckBox ApportionCPU;
-	private JCheckBox HideDiff;
+	private JCheckBox HideMinerStats;
 	private JCheckBox BackgroundMode;
 	private JCheckBox DebugCheck;
 	
@@ -141,13 +145,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 DebugCheck = new JCheckBox("Debug");
 		 DebugCheck.setToolTipText("Output cpuminer debug info");
 		 
-		 HideCPU = new JCheckBox("Hide CPU hashmeter output");
+		 ShowCPU = new JCheckBox("Show CPU hashmeter output");
 		 
 		 NoColor = new JCheckBox("Disable colored output");
 		    
 		 ApportionCPU = new JCheckBox("Apportion load CPU");
 		 
-		 HideDiff = new JCheckBox("Don't display diff");
+		 HideMinerStats = new JCheckBox("Don't display Miner Stats");
+		 
 		 
 		 BackgroundMode = new JCheckBox("Background mode");
 		 BackgroundMode.setToolTipText("Run miner without console");
@@ -223,9 +228,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	        
 	     WindowInterfacePlacement(window);
 	     
-	     AddUpdateElement(HideCPU);
+	     AddUpdateElement(ShowCPU);
 		 AddUpdateElement(NoColor);
-		 AddUpdateElement(HideDiff);
+		 AddUpdateElement(HideMinerStats);
 		 AddUpdateElement(BackgroundMode);
 		 AddUpdateElement(NumberThreads);
 		 AddUpdateElement(Alghorytm);
@@ -308,8 +313,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 									.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createParallelGroup()
 										.addComponent(CloseMiners, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 										.addComponent(StartMining, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
-									.addComponent(HideDiff)
-									.addComponent(HideCPU))
+									.addComponent(HideMinerStats)
+									.addComponent(ShowCPU))
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 								.addGroup(contentPaneLayout.createParallelGroup()
 									.addComponent(Pause)
@@ -413,13 +418,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 									.addComponent(InfiniteLoop, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-									.addComponent(HideCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
+									.addComponent(ShowCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
 							.addComponent(DebugCheck, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(BackgroundMode, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 							.addComponent(Pause)
-							.addComponent(HideDiff, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+							.addComponent(HideMinerStats, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(StartMining)
@@ -549,9 +554,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	}
 	
 	private void SetDefaultSettings() {
-		HideCPU.setSelected(false);
+		ShowCPU.setSelected(false);
 		NoColor.setSelected(false);
-		HideDiff.setSelected(false);
+		HideMinerStats.setSelected(false);
 		BackgroundMode.setSelected(false);
 		NumberThreads.setSelectedIndex(cores-1);
 		ApportionCPU.setSelected(false);
@@ -569,9 +574,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	}
 
 	private void LoadSettings() {
-		HideCPU.setSelected(userPrefs.getBoolean("hidecpu", false));
+		ShowCPU.setSelected(userPrefs.getBoolean("showcpu", false));
 		NoColor.setSelected(userPrefs.getBoolean("nocolor", false));
-		HideDiff.setSelected(userPrefs.getBoolean("hidedif", false));
+		HideMinerStats.setSelected(userPrefs.getBoolean("hidedif", false));
 		BackgroundMode.setSelected(userPrefs.getBoolean("backgroundmode", false));
 		NumberThreads.setSelectedIndex(userPrefs.getInt("numberthreads", cores-1));
 		ApportionCPU.setSelected(userPrefs.getBoolean("apportioncpu", false));
@@ -592,13 +597,15 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		
 		String PoolItemName = userPrefs.get("pool", PoolDefault);
 		Pool.setSelectedItem(PoolItemName);
+		
+		 GetProcessorType();
 	}
 
 	private void SaveSettings() {	
-		userPrefs.putBoolean("hidecpu", HideCPU.isSelected());
+		userPrefs.putBoolean("showcpu", ShowCPU.isSelected());
 		userPrefs.putBoolean("nocolor", NoColor.isSelected());
 		userPrefs.putBoolean("apportioncpu", ApportionCPU.isSelected());
-		userPrefs.putBoolean("hidedif", HideDiff.isSelected());
+		userPrefs.putBoolean("hidedif", HideMinerStats.isSelected());
 		userPrefs.putBoolean("backgroundmode", BackgroundMode.isSelected());
 		userPrefs.putInt("numberthreads", NumberThreads.getSelectedIndex());
 		userPrefs.putInt("alghorytm", Alghorytm.getSelectedIndex());
@@ -645,13 +652,25 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
         }
 	}
 	
+	private void GetProcessorType() {
+		/*System.out.println(System.getenv("PROCESSOR_IDENTIFIER"));
+		System.out.println(System.getenv("PROCESSOR_ARCHITECTURE"));
+		System.out.println(System.getenv("PROCESSOR_ARCHITEW6432"));
+		System.out.println(System.getenv("NUMBER_OF_PROCESSORS"));*/
+		/*SystemInfo si = new SystemInfo();
+		HardwareAbstractionLayer hal = si.getHardware();
+		CentralProcessor cpu = hal.getProcessor();
+		CentralProcessor.ProcessorIdentifier processorIdentifier = cpu.getProcessorIdentifier();
+		log(processorIdentifier.getMicroarchitecture());*/
+		
+	}
 
 	private void UpdateCommand() {
 		String CommandText = "";
 		
 		String MinerPath = "";
 		try {
-			MinerPath = "\"" + new File(".").getCanonicalPath() + "\\cpuminer-bin\\cpuminer.exe\"";
+			MinerPath = "\"" + new File(".").getCanonicalPath() + "\\cpuminer-bin\\cpuminer-sse2.exe\"";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -690,15 +709,15 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 				
 		CommandText = CommandText + "-T " + TimeStratum.getValue() + " ";
 		
-		if (HideCPU.isSelected()) {
-			CommandText = CommandText + "-q ";
+		if (ShowCPU.isSelected()) {
+			CommandText = CommandText + "--hash-meter ";
 		}
 	
 		if(NoColor.isSelected()) {
 			CommandText = CommandText + "--no-color ";
 		}
-		if(HideDiff.isSelected()) {
-			CommandText = CommandText + "--hide-diff ";
+		if(HideMinerStats.isSelected()) {
+			CommandText = CommandText + "--q ";
 		}
 		if(BackgroundMode.isSelected()) {
 			CommandText = CommandText + "-B ";
