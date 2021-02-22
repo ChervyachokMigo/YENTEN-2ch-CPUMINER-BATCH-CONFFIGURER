@@ -47,7 +47,17 @@ public class FormCpuuMiner extends JFrame {
 		TimeStratumLabel = new JLabel();
 		TimeStratum = new JSpinner();
 		SaveBAT = new JButton();
-		button1 = new JButton();
+		CloseMiners = new JButton();
+		Solo = new JCheckBox();
+		AditionalParameters = new JTextField();
+		AditionalParametersLabel = new JLabel();
+		CoinType = new JComboBox();
+		CoinTypeLabel = new JLabel();
+		Registration = new JButton();
+		Ping = new JLabel();
+		Profiles = new JButton();
+		PoolURL = new JTextField();
+		PoolURLLabel = new JLabel();
 
 		//======== this ========
 		setResizable(false);
@@ -58,21 +68,27 @@ public class FormCpuuMiner extends JFrame {
 
 		//---- PoolLabel ----
 		PoolLabel.setText("Pool");
+		PoolLabel.setLabelFor(Pool);
 
 		//---- AlghorytmLabel ----
 		AlghorytmLabel.setText("Alghorytm");
+		AlghorytmLabel.setLabelFor(Alghorytm);
 
 		//---- WalletAdressLabel ----
 		WalletAdressLabel.setText("Wallet/Username");
+		WalletAdressLabel.setLabelFor(WalletAdress);
 
 		//---- NamePCLabel ----
 		NamePCLabel.setText("Name PC");
+		NamePCLabel.setLabelFor(NamePC);
 
 		//---- NumberThreadsLabel ----
 		NumberThreadsLabel.setText("Number of Threads");
+		NumberThreadsLabel.setLabelFor(NumberThreads);
 
 		//---- CPUPriorityLabel ----
 		CPUPriorityLabel.setText("Miner Priority");
+		CPUPriorityLabel.setLabelFor(CPUPriority);
 
 		//---- ApportionCPU ----
 		ApportionCPU.setText("Apportion CPU");
@@ -116,9 +132,11 @@ public class FormCpuuMiner extends JFrame {
 
 		//---- PasswordLabel ----
 		PasswordLabel.setText("Password");
+		PasswordLabel.setLabelFor(Password);
 
 		//---- TimeStratumLabel ----
 		TimeStratumLabel.setText("Timeout/Stratum (sec)");
+		TimeStratumLabel.setLabelFor(TimeStratum);
 
 		//---- TimeStratum ----
 		TimeStratum.setModel(new SpinnerNumberModel(300, 30, null, 30));
@@ -126,83 +144,113 @@ public class FormCpuuMiner extends JFrame {
 		//---- SaveBAT ----
 		SaveBAT.setText("Save BAT File");
 
-		//---- button1 ----
-		button1.setText("Close All Miners");
+		//---- CloseMiners ----
+		CloseMiners.setText("Close All Miners");
+
+		//---- Solo ----
+		Solo.setText("Solo");
+
+		//---- AditionalParametersLabel ----
+		AditionalParametersLabel.setText("Adtitional parameters");
+
+		//---- CoinTypeLabel ----
+		CoinTypeLabel.setText("CoinType");
+
+		//---- Registration ----
+		Registration.setText("Registration");
+
+		//---- Ping ----
+		Ping.setText("Pool ping: None");
+
+		//---- Profiles ----
+		Profiles.setText("Profiles...");
+
+		//---- PoolURLLabel ----
+		PoolURLLabel.setText("Mining URL");
+		PoolURLLabel.setLabelFor(PoolURL);
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
 		contentPaneLayout.setHorizontalGroup(
 			contentPaneLayout.createParallelGroup()
 				.addGroup(contentPaneLayout.createSequentialGroup()
-					.addGap(6, 6, 6)
-					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup()
+						.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+							.addComponent(PoolLabel, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(Pool, GroupLayout.PREFERRED_SIZE, 288, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+							.addGap(5, 5, 5)
+							.addComponent(Solo))
+						.addComponent(AditionalParametersLabel)
 						.addGroup(contentPaneLayout.createSequentialGroup()
 							.addGroup(contentPaneLayout.createParallelGroup()
-								.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createParallelGroup()
-									.addComponent(button1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-									.addComponent(StartMining, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
 								.addComponent(HideDiff)
-								.addComponent(HideCPU))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addGroup(contentPaneLayout.createParallelGroup()
+								.addComponent(HideCPU)
+								.addComponent(NoColor))
+							.addGap(0, 0, 0)
+							.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
 								.addComponent(Pause)
-								.addComponent(Benchmark, GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-								.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
 								.addComponent(InfiniteLoop))
 							.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 								.addGroup(contentPaneLayout.createSequentialGroup()
-									.addGap(18, 18, 18)
-									.addGroup(contentPaneLayout.createParallelGroup()
-										.addComponent(DebugCheck)
-										.addComponent(BackgroundMode))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 4, Short.MAX_VALUE))
-								.addGroup(contentPaneLayout.createSequentialGroup()
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addComponent(DefaultSettings, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))))
-						.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
-							.addComponent(PoolLabel)
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addComponent(Pool, 0, 363, Short.MAX_VALUE)
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE))
+									.addComponent(DebugCheck)
+									.addGap(68, 68, 68))
+								.addComponent(BackgroundMode)))
 						.addGroup(contentPaneLayout.createSequentialGroup()
 							.addGroup(contentPaneLayout.createParallelGroup()
+								.addComponent(NumberThreadsLabel)
 								.addComponent(WalletAdressLabel)
 								.addComponent(NamePCLabel)
 								.addComponent(PasswordLabel)
-								.addComponent(CPUPriorityLabel)
-								.addComponent(NumberThreadsLabel))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(CPUPriorityLabel))
+							.addGap(5, 5, 5)
 							.addGroup(contentPaneLayout.createParallelGroup()
-								.addGroup(contentPaneLayout.createSequentialGroup()
-									.addGroup(contentPaneLayout.createParallelGroup()
-										.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-										.addGroup(contentPaneLayout.createSequentialGroup()
-											.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-												.addComponent(Password, GroupLayout.Alignment.LEADING)
-												.addComponent(CPUPriority, GroupLayout.Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(NumberThreads, GroupLayout.Alignment.LEADING, 0, 155, Short.MAX_VALUE))
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
-									.addGroup(contentPaneLayout.createParallelGroup()
-										.addGroup(contentPaneLayout.createSequentialGroup()
-											.addGap(5, 5, 5)
-											.addComponent(AlghorytmLabel)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(Alghorytm, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE))
-										.addGroup(contentPaneLayout.createSequentialGroup()
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(ApportionCPU))))
-								.addComponent(WalletAdress, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)))
-						.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
+								.addComponent(CPUPriority, 0, 211, Short.MAX_VALUE)
+								.addComponent(NumberThreads, 0, 211, Short.MAX_VALUE)
+								.addComponent(Password, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+								.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+								.addComponent(WalletAdress, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+							.addGap(5, 5, 5)
+							.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+								.addComponent(Registration, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(ApportionCPU)
+								.addComponent(Ping, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+						.addGroup(contentPaneLayout.createSequentialGroup()
 							.addComponent(TimeStratumLabel)
+							.addGap(5, 5, 5)
+							.addGroup(contentPaneLayout.createParallelGroup()
+								.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+								.addComponent(AditionalParameters, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)))
+						.addGroup(contentPaneLayout.createSequentialGroup()
+							.addComponent(StartMining, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)))
-					.addGap(40, 40, 40))
-				.addGroup(contentPaneLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(NoColor)
-					.addContainerGap(343, Short.MAX_VALUE))
+							.addComponent(SaveBAT, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(DefaultSettings, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+						.addGroup(contentPaneLayout.createSequentialGroup()
+							.addComponent(CloseMiners, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(Benchmark)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(Profiles, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+						.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+							.addComponent(PoolURLLabel)
+							.addGap(5, 5, 5)
+							.addComponent(PoolURL, GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+						.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+							.addComponent(CoinTypeLabel)
+							.addGap(5, 5, 5)
+							.addComponent(CoinType, GroupLayout.PREFERRED_SIZE, 156, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(AlghorytmLabel)
+							.addGap(5, 5, 5)
+							.addComponent(Alghorytm, 0, 156, Short.MAX_VALUE)))
+					.addGap(5, 5, 5))
 		);
+		contentPaneLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {Benchmark, CloseMiners, SaveBAT, StartMining});
 		contentPaneLayout.setVerticalGroup(
 			contentPaneLayout.createParallelGroup()
 				.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
@@ -210,61 +258,78 @@ public class FormCpuuMiner extends JFrame {
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(Pool)
 						.addComponent(PoolLabel)
-						.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(Solo))
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(CoinTypeLabel)
+						.addComponent(CoinType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(AlghorytmLabel)
+						.addComponent(Alghorytm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(PoolURL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(PoolURLLabel))
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(WalletAdressLabel)
-						.addComponent(WalletAdress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-						.addComponent(NamePCLabel, GroupLayout.Alignment.LEADING)
-						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-							.addComponent(NamePC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(AlghorytmLabel)
-							.addComponent(Alghorytm, 0, 0, Short.MAX_VALUE)))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(WalletAdress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(Registration, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(NamePCLabel)
+						.addComponent(NamePC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(Ping, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(PasswordLabel)
 						.addComponent(Password, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(CPUPriorityLabel)
 						.addComponent(CPUPriority, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(ApportionCPU)
 						.addComponent(NumberThreadsLabel)
-						.addComponent(NumberThreads, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-						.addComponent(ApportionCPU))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(NumberThreads, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(TimeStratumLabel)
+						.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
+					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(AditionalParametersLabel)
+						.addComponent(AditionalParameters, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 						.addGroup(contentPaneLayout.createSequentialGroup()
-							.addGroup(contentPaneLayout.createParallelGroup()
-								.addComponent(TimeStratumLabel)
-								.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-							.addGap(18, 18, 18)
 							.addComponent(NoColor, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(HideCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(HideDiff, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+						.addGroup(contentPaneLayout.createSequentialGroup()
+							.addGroup(contentPaneLayout.createParallelGroup()
+								.addComponent(InfiniteLoop, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+								.addComponent(DebugCheck, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 							.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-								.addComponent(InfiniteLoop, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-								.addComponent(HideCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
-						.addComponent(DebugCheck, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(BackgroundMode, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-						.addComponent(Pause)
-						.addComponent(HideDiff, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(Pause)
+								.addComponent(BackgroundMode, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))))
+					.addGap(5, 5, 5)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(StartMining)
-						.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(DefaultSettings))
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 					.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(button1)
+						.addComponent(CloseMiners)
 						.addComponent(Benchmark)
-						.addComponent(DefaultSettings))
-					.addContainerGap())
+						.addComponent(Profiles))
+					.addGap(0, 0, 0))
 		);
-		setSize(485, 390);
+		setSize(455, 435);
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
@@ -298,6 +363,16 @@ public class FormCpuuMiner extends JFrame {
 	private JLabel TimeStratumLabel;
 	private JSpinner TimeStratum;
 	private JButton SaveBAT;
-	private JButton button1;
+	private JButton CloseMiners;
+	private JCheckBox Solo;
+	private JTextField AditionalParameters;
+	private JLabel AditionalParametersLabel;
+	private JComboBox CoinType;
+	private JLabel CoinTypeLabel;
+	private JButton Registration;
+	private JLabel Ping;
+	private JButton Profiles;
+	private JTextField PoolURL;
+	private JLabel PoolURLLabel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -13,11 +13,11 @@
        <class>org.jdesktop.layout.GroupLayout</class> 
        <void method="setProperty"> 
         <string>$horizontalGroup</string> 
-        <string>par l {seq {space :p:6:p, par t {seq {par l {par l:t {comp button1::t::153:x:1, comp StartMining::t::153:x:1}, comp HideDiff::l:p::p:1, comp HideCPU::l:p::p:1}, space :::p, par l {comp Pause::l:p::p:1, comp Benchmark::::146:x:1, comp SaveBAT::l::146:x:1, comp InfiniteLoop:::p::p}, par t {seq {space s:::p, par l {comp DebugCheck:::p::p:1, comp BackgroundMode:::p::p:1}, space ::4:x}, seq {space u:::p, comp DefaultSettings:::p:138:p:1}}}, seq l:::1 {comp PoolLabel:::p::p, space :::p, comp Pool::::363:x, space :::p, comp AddPool:::p:57:p}, seq t {par l {comp WalletAdressLabel::l:p::p:1, comp NamePCLabel:::p::p:1, comp PasswordLabel:::p::p, comp CPUPriorityLabel:::p::p:1, comp NumberThreadsLabel:::p::p:1}, space :::p, par l {seq {par l {comp NamePC::l::158:x:1, seq l {par t:::p {comp Password::l:::x:1, comp CPUPriority::l:::x:1, comp NumberThreads::l::155:x:1}, space :::p}}, par l {seq {space :p:5:p, comp AlghorytmLabel:::p::p, space :::p, comp Alghorytm:::p:117:p:1}, seq l {space u:::p, comp ApportionCPU:::p::p:1}}}, comp WalletAdress::::343:x:1}}, seq l {comp TimeStratumLabel:::p::p, space :::p, comp TimeStratum:::p:82:p}}, space :p:40:p}, seq l {space :::p, comp NoColor:::p::p:1, space ::343:x}}</string> 
+        <string>par l {seq {space :5:5:p, par l {seq t {comp PoolLabel::::25:x, space :::p, comp Pool:::p:288:p, space :::p, comp AddPool:::p:57:p, space :p:5:p, comp Solo:::p::p}, comp AditionalParametersLabel::l:p::p, seq l {par l {comp HideDiff::l:p::p:1, comp HideCPU::l:p::p:1, comp NoColor::l:p::p:1}, space :p:0:p, par l:::p {comp Pause::l:p::p:1, comp InfiniteLoop:::p::p}, par t {seq {comp DebugCheck:::p::p:1, space :p:68:p}, comp BackgroundMode::t:p::p:1}}, seq l {par l {comp NumberThreadsLabel::l:p::p:1, comp WalletAdressLabel::l:p::p:1, comp NamePCLabel::l:p::p:1, comp PasswordLabel::l:p::p, comp CPUPriorityLabel::l:p::p:1}, space :p:5:p, par l {comp CPUPriority::l::211:x:1, comp NumberThreads::l::211:x:1, comp Password::l::211:x:1, comp NamePC::l::211:x:1, comp WalletAdress::l::211:x:1}, space :p:5:p, par l:::p {comp Registration::l:::x:1, comp ApportionCPU::l:p::p:1, comp Ping::l:::x:1}}, seq l {comp TimeStratumLabel:::p::p, space :p:5:p, par l {comp TimeStratum:::p:94:p, comp AditionalParameters::l::305:x:1}}, seq l:::1 {comp StartMining:1::p:145:p, space :::p, comp SaveBAT:1::p:130:p, space :::p, comp DefaultSettings::::133:x}, seq l {comp CloseMiners:1::p:145:p, space :::p, comp Benchmark:1::p::p, space :p::p, comp Profiles::::133:x}, seq t {comp PoolURLLabel:::p::p, space :p:5:p, comp PoolURL::::369:x}, seq t {comp CoinTypeLabel:::p::p, space :p:5:p, comp CoinType:::p:156:p, space :::p, comp AlghorytmLabel:::p::p, space :p:5:p, comp Alghorytm::::156:x:1}}, space :5:5:p}}</string> 
        </void> 
        <void method="setProperty"> 
         <string>$verticalGroup</string> 
-        <string>par l {seq t {space :p::p, par b {comp Pool::b:::x:1, comp PoolLabel::b:p::p, comp AddPool::b:p:26:p}, space :::p, par b {comp WalletAdressLabel::b:p::p, comp WalletAdress::b:p::p}, space :::p, par t {comp NamePCLabel::l:p::p, par b {comp NamePC::b:p::p:1, comp AlghorytmLabel::b:p::p, comp Alghorytm::b:0:0:x:1}}, space :::p, par b {comp PasswordLabel::b:p::p, comp Password::b:p::p}, space u:::p, par b {comp CPUPriorityLabel::b:p::p:1, comp CPUPriority::b:p:20:p:1}, space u:::p, par b {comp NumberThreadsLabel::b:p::p, comp NumberThreads::b:p:20:p, comp ApportionCPU::b:p::p:1}, space :::p, par t {seq {par l {comp TimeStratumLabel:::p::p, comp TimeStratum::l:p:20:p}, space s:::p, comp NoColor:::p:19:p, space :::p, par b {comp InfiniteLoop::b:p:19:p, comp HideCPU::b:p:19:p}}, comp DebugCheck::t:p:16:p}, space :::p, par b {comp BackgroundMode::b:p:21:p:1, comp Pause::b:p::p, comp HideDiff::b:p:19:p:1}, space :::p, par b {comp StartMining::b:p::p:1, comp SaveBAT::b:::x:1}, space :::p, par b {comp button1::b:p::p, comp Benchmark::b:p::p:1, comp DefaultSettings::b:p::p:1}, space :::p}}</string> 
+        <string>par l {seq t {space :::p, par b {comp Pool::b:::x:1, comp PoolLabel::b:p::p, comp AddPool::b:p:26:p, comp Solo::b:p::p}, space :p:5:p, par b {comp CoinTypeLabel::b:p::p, comp CoinType::b:p::p, comp AlghorytmLabel::b:p::p, comp Alghorytm::b:p::p:1}, space :p:5:p, par b {comp PoolURL::b:p::p, comp PoolURLLabel::b:p::p}, space :p:5:p, par b {comp WalletAdressLabel::b:p::p, comp WalletAdress::b:p::p, comp Registration::b:p:18:p}, space :p:5:p, par b {comp NamePCLabel::b:p::p, comp NamePC::b:p::p:1, comp Ping::b:p:13:p}, space :p:5:p, par b {comp PasswordLabel::b:p::p, comp Password::b:p::p}, space :p:5:p, par b {comp CPUPriorityLabel::b:p::p:1, comp CPUPriority::b:p:20:p:1}, space :p:5:p, par b {comp ApportionCPU::b:p::p:1, comp NumberThreadsLabel::b:p::p, comp NumberThreads::b:p:20:p}, space :p:5:p, par b {comp TimeStratumLabel::b:p::p, comp TimeStratum::b:p:20:p}, space :p:5:p, par b {comp AditionalParametersLabel::b:p::p, comp AditionalParameters::b:p::p}, space :p:5:p, par t {seq t {comp NoColor:::p:19:p, space :::p, comp HideCPU:::p:19:p, space :p::p, comp HideDiff:::p:19:p:1}, seq t {par l {comp InfiniteLoop::t:p:19:p, comp DebugCheck::t:p:16:p}, space :::p, par b {comp Pause::b:p::p, comp BackgroundMode::b:p:21:p:1}}}, space :p:5:p, par b {comp StartMining::b:p::p:1, comp SaveBAT::b:::x:1, comp DefaultSettings::b:p::p:1}, space :::p, par b {comp CloseMiners::b:p::p, comp Benchmark::b:p::p:1, comp Profiles::b:p::p}, space :p:0:p}}</string> 
        </void> 
       </object> 
       <void method="setProperty"> 
@@ -51,6 +51,12 @@
          <string>text</string> 
          <string>Pool</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>Pool</string> 
+         </object> 
+        </void> 
         <void property="name"> 
          <string>PoolLabel</string> 
         </void> 
@@ -70,6 +76,12 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Alghorytm</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>Alghorytm</string> 
+         </object> 
         </void> 
         <void property="name"> 
          <string>AlghorytmLabel</string> 
@@ -91,6 +103,12 @@
          <string>text</string> 
          <string>Wallet/Username</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>WalletAdress</string> 
+         </object> 
+        </void> 
         <void property="name"> 
          <string>WalletAdressLabel</string> 
         </void> 
@@ -110,6 +128,12 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Name PC</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>NamePC</string> 
+         </object> 
         </void> 
         <void property="name"> 
          <string>NamePCLabel</string> 
@@ -139,6 +163,12 @@
          <string>text</string> 
          <string>Number of Threads</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>NumberThreads</string> 
+         </object> 
+        </void> 
         <void property="name"> 
          <string>NumberThreadsLabel</string> 
         </void> 
@@ -150,6 +180,12 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Miner Priority</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>CPUPriority</string> 
+         </object> 
         </void> 
         <void property="name"> 
          <string>CPUPriorityLabel</string> 
@@ -354,6 +390,12 @@
          <string>text</string> 
          <string>Password</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>Password</string> 
+         </object> 
+        </void> 
         <void property="name"> 
          <string>PasswordLabel</string> 
         </void> 
@@ -365,6 +407,12 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Timeout/Stratum (sec)</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>TimeStratum</string> 
+         </object> 
         </void> 
         <void property="name"> 
          <string>TimeStratumLabel</string> 
@@ -413,7 +461,121 @@
          <string>Close All Miners</string> 
         </void> 
         <void property="name"> 
-         <string>button1</string> 
+         <string>CloseMiners</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JCheckBox</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Solo</string> 
+        </void> 
+        <void property="name"> 
+         <string>Solo</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>AditionalParameters</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Adtitional parameters</string> 
+        </void> 
+        <void property="name"> 
+         <string>AditionalParametersLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>CoinType</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>CoinType</string> 
+        </void> 
+        <void property="name"> 
+         <string>CoinTypeLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Registration</string> 
+        </void> 
+        <void property="name"> 
+         <string>Registration</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Pool ping: None</string> 
+        </void> 
+        <void property="name"> 
+         <string>Ping</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Profiles...</string> 
+        </void> 
+        <void property="name"> 
+         <string>Profiles</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>PoolURL</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Mining URL</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>PoolURL</string> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>PoolURLLabel</string> 
         </void> 
        </object> 
       </void> 
@@ -426,15 +588,15 @@
       <void method="setProperty"> 
        <string>location</string> 
        <object class="java.awt.Point"> 
-        <int>115</int> 
-        <int>0</int> 
+        <int>320</int> 
+        <int>175</int> 
        </object> 
       </void> 
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>485</int> 
-        <int>390</int> 
+        <int>455</int> 
+        <int>435</int> 
        </object> 
       </void> 
      </object> 
