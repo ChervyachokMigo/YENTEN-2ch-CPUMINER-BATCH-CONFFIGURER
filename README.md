@@ -9,7 +9,7 @@
 
 * Добавлен список серверов и исправлены мелкие баги.
 
-<h2><a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/tag/v0.125>Download Windows x64 build</a></h2>
+<h2><a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/download/v0.125/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER-v0.125-Windows-x64-Release-build.rar>Download Windows x64 Release build v0.125</a></h2>
 
 <h3>Screenshot</h3>
 <img src=https://i.imgur.com/ZYNxicu.png>
