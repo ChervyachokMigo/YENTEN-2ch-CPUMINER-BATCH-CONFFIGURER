@@ -1,4 +1,7 @@
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,15 +11,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,15 +38,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultFormatter;
-/*
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.HardwareAbstractionLayer; */
+
 
 public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private JCheckBox ShowCPU;
@@ -64,8 +68,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	
 	private int cores;
 	
-	private Preferences userPrefs;
-	private String SettingsName;
+	private Preferences ProfilePrefs;
+	private String ProfileName;
 	
 	private JLabel NumberThreadsLabel;
 	private JLabel WalletAdressLabel;
@@ -85,6 +89,22 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	
 	private JButton CloseMiners;
 	private String PoolDefault;
+	private String[][] DefaultPoolsList;
+	private Preferences LastPool;
+	
+	private JCheckBox Solo;
+	private JTextField AditionalParameters;
+	private JLabel AditionalParametersLabel;
+	private JComboBox<String> CoinType;
+	private JLabel CoinTypeLabel;
+	private JButton Registration;
+	private JLabel Ping;
+	private JButton Profiles;
+	private JTextField PoolURL;
+	private JLabel PoolURLLabel;
+	private String LastPoolRegistrationURL;
+	
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 	
 	public YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR(String windowName) {
 		JFrame wid = new JFrame(windowName);
@@ -92,7 +112,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		wid.addWindowListener(new WindowAdapter() {
 	    	 @Override
 	    	 public void windowClosing(WindowEvent e) {
-	    		 SaveSettings();
+	    		 SaveSettings((String) Pool.getSelectedItem());
 	    	     System.exit(0);
 	    	 }
 	     });
@@ -101,14 +121,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		wid.setIconImage(img.getImage());
 		Init(wid);
 	}
-
+	
 	private void Init(final JFrame window) {
-		SettingsName = "cpu-miner-batch-configurator";
-		userPrefs = Preferences.userRoot().node(SettingsName);
-		PoolDefault = "stratum+tcp://yenten-pool.info:63368";
-		
-		cores = Runtime.getRuntime().availableProcessors();
+		 cores = Runtime.getRuntime().availableProcessors();
 				 
+		 PoolDefault = "YENTEN-POOL";
+		 String[] PoolList = new String[] {null};
+		
+		//createform
 		 StartMining = new JButton("Start Mining");  
 		 StartMining.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
@@ -121,14 +141,17 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 DefaultSettings.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
            	 	SetDefaultSettings();
+           	 	SaveSettings((String) Pool.getSelectedItem());
              }
          });
 		 DefaultSettings.setToolTipText("Clear all fields");
 			 
-		 AddPool = new JButton("Add");
+		 AddPool = new JButton("Add...");
 		 AddPool.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
 				 ShowAddPoolDialog(window);
+				 SetDefaultSettings();
+				 SaveSettings((String) Pool.getSelectedItem());
 			 }
 		 });
 		 AddPool.setMargin(new Insets(2, 0, 2, 0));
@@ -167,18 +190,18 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	     
 	     NumberThreadsLabel = new JLabel("Number of threads");
 		 
-	     String[] AlghorytmsList = new String[]{"yespowerr16"};
+	     String[] AlghorytmsList = new String[]{"yespowerR16"};
 	     Alghorytm = new JComboBox<String>(AlghorytmsList);
 	     Alghorytm.setToolTipText("Alghorytm");
 	     
 	     AlghorytmLabel = new JLabel ("Alghorytm");
 	     
-	     String[] PoolList = new String[] {PoolDefault};
+	     
 	     Pool = new JComboBox<String>(PoolList);
 	     Pool.setToolTipText("Select Pool or Add New Pool Adress");
-	     Pool.setEditable(false);
+	     
 	     PoolLabel = new JLabel ("Pool");
-
+	     
 	     String[] PriorityList = new String[] {"[0] IDLE","[1] BELOW NORMAL","[2] NORMAL","[3] ABOVE NORMAL","[4] HIGH","[5] REALTIME"};
 	     CPUPriority = new JComboBox<String>(PriorityList);
 	     CPUPriority.setToolTipText("Set cpuminer process priority");
@@ -224,10 +247,126 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 });
 		 CloseMiners.setToolTipText("Close All Running Miners");
 		 
-	     LoadSettings();
-	        
-	     WindowInterfacePlacement(window);
-	     
+		Registration = new JButton();
+		
+		CoinType = new JComboBox<String>();
+		CoinType.addItem("YTN");
+		CoinTypeLabel = new JLabel();
+		
+		PoolURL = new JTextField();
+		PoolURLLabel = new JLabel();
+		PoolURL.setDisabledTextColor(Color.black);
+		PoolURL.setBorder(BorderFactory.createLineBorder(Color.gray));
+		
+		AditionalParameters = new JTextField();
+		AditionalParametersLabel = new JLabel();
+		
+		Ping = new JLabel();
+		
+		Solo = new JCheckBox();
+		Solo.setEnabled(false);
+		Solo.setText("Solo");
+		Profiles = new JButton();
+		Profiles.setEnabled(false);
+		
+		
+		AditionalParametersLabel.setText("Adtitional parameters");
+		CoinTypeLabel.setText("CoinType");
+		Registration.setText("Registration");
+		Ping.setText("Pool ping: None");
+		Profiles.setText("Profiles...");
+		PoolURLLabel.setText("Mining URL");
+		
+		PoolURLLabel.setLabelFor(PoolURL);
+		PoolLabel.setLabelFor(Pool);
+		WalletAdressLabel.setLabelFor(WalletAdress);
+		AlghorytmLabel.setLabelFor(Alghorytm);
+		NamePCLabel.setLabelFor(NamePC);
+		NumberThreadsLabel.setLabelFor(NumberThreads);
+		CPUPriorityLabel.setLabelFor(CPUPriority);
+		PasswordLabel.setLabelFor(Password);
+		TimeStratumLabel.setLabelFor(TimeStratum);
+		
+		 
+		 WindowInterfacePlacement(window);
+		 
+		 //load settings
+		 
+		 String[][] DefaultPoolsList_t = {
+			//Name  URL  RegistrationURL pingpoolurl password walletor/username
+			{ "YENTEN-POOL" , "stratum+tcp://yenten-pool.info:63368", "No", "yenten-pool.info", "" , "Wallet" },
+			{ "CPU-POOL", "stratum+tcp://cpu-pool.com:63368", "No", "cpu-pool.com", "" , "Wallet" , "Wallet"  },
+			{ "RPLANT-POOL (varDiff 0.2) RUS", "stratum+tcp://stratum-ru.rplant.xyz:3382", "No", "stratum-ru.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL (varDiff 0.8) RUS", "stratum+tcp://stratum-ru.rplant.xyz:3383", "No", "stratum-ru.rplant.xyz", ""  , "Wallet" },
+			{ "RPLANT-POOL SSL (varDiff 0.2) RUS", "stratum+tcps://stratum-ru.rplant.xyz:13382", "No", "stratum-ru.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL SSL (varDiff 0.8) RUS", "stratum+tcps://stratum-ru.rplant.xyz:13383", "No", "stratum-ru.rplant.xyz", ""  , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.2) EU", "stratum+tcp://stratum-eu.rplant.xyz:3382", "No", "stratum-eu.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL (varDiff 0.8) EU", "stratum+tcp://stratum-eu.rplant.xyz:3383", "No", "stratum-eu.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL SSL (varDiff 0.2) EU", "stratum+tcps://stratum-eu.rplant.xyz:13382", "No", "stratum-eu.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL SSL (varDiff 0.8) EU", "stratum+tcps://stratum-eu.rplant.xyz:13383", "No", "stratum-eu.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.2) ASIA", "stratum+tcp://stratum-asia.rplant.xyz:3382", "No", "stratum-asia.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.8) ASIA", "stratum+tcp://stratum-asia.rplant.xyz:3383", "No", "stratum-asia.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.2) ASIA", "stratum+tcps://stratum-asia.rplant.xyz:13382", "No", "stratum-asia.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL (varDiff 0.8) ASIA", "stratum+tcps://stratum-asia.rplant.xyz:13383", "No", "stratum-asia.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL (varDiff 0.2) USA", "stratum+tcp://stratum-na.rplant.xyz:3382", "No", "stratum-na.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.8) USA", "stratum+tcp://stratum-na.rplant.xyz:3383", "No", "stratum-na.rplant.xyz", "" , "Wallet" },
+			{ "RPLANT-POOL (varDiff 0.2) USA", "stratum+tcps://stratum-na.rplant.xyz:13382", "No", "stratum-na.rplant.xyz", "" , "Wallet"},
+			{ "RPLANT-POOL (varDiff 0.8) USA", "stratum+tcps://stratum-na.rplant.xyz:13383", "No", "stratum-na.rplant.xyz", "" , "Wallet"},
+			{ "MINING DUTCH EU", "stratum+tcp://yespowerr16.mining-dutch.nl:9987", "https://www.mining-dutch.nl/pools/account.php?page=register", "yespowerr16.mining-dutch.nl", ""  , "Username" },
+			{ "MINING DUTCH ASIA", "stratum+tcp://asia.yespowerr16.mining-dutch.nl:9987", "https://www.mining-dutch.nl/pools/account.php?page=register", "asia.yespowerr16.mining-dutch.nl", "" , "Username" },
+			{ "MINING DUTCH USA", "stratum+tcp://americas.yespowerr16.mining-dutch.nl:9987", "https://www.mining-dutch.nl/pools/account.php?page=register", "americas.yespowerr16.mining-dutch.nl", "" , "Username" },
+			{ "ZERGPOOL ANYCAST", "stratum+tcp://yespowerR16.mine.zergpool.com:6534", "No", "yespowerR16.mine.zergpool.com", "c=YTN,mc=YTN" , "Wallet" },
+			{ "ZERGPOOL EU", "stratum+tcp://yespowerR16.eu.mine.zergpool.com:6534", "No", "yespowerR16.eu.mine.zergpool.com", "c=YTN,mc=YTN" , "Wallet"  },
+			{ "ZERGPOOL ASIA", "stratum+tcp://yespowerR16.asia.mine.zergpool.com:6534", "No", "yespowerR16.asia.mine.zergpool.com", "c=YTN,mc=YTN" , "Wallet" },
+			{ "ZERGPOOL USA", "stratum+tcp://yespowerR16.na.mine.zergpool.com:6534", "No", "yespowerR16.na.mine.zergpool.com", "c=YTN,mc=YTN" , "Wallet"  },
+			{ "LEYWA MINING POOL JP1", "stratum+tcp://yespowerR16.jp1.mine.leywapool.com:6342", "No", "yespowerR16.jp1.mine.leywapool.com", "c=YTN" , "Wallet" },
+			{ "LEYWA MINING POOL JP2", "stratum+tcp://yespowerR16.jp2.mine.leywapool.com:6342", "No", "yespowerR16.jp2.mine.leywapool.com", "c=YTN" , "Wallet" },
+			{ "LEYWA MINING POOL JP3", "stratum+tcp://yespowerR16.jp3.mine.leywapool.com:6342", "No", "yespowerR16.jp3.mine.leywapool.com", "c=YTN" , "Wallet" },
+			{ "YENTEN LUCKY POOL (EXTRA LOW DIFF)", "stratum+tcp://stratum.luckypool.org:3311", "https://yenten.luckypool.org/index.php?page=register", "stratum.luckypool.org", "" , "Username" },
+			{ "YENTEN LUCKY POOL (LOW DIFF)", "stratum+tcp://stratum.luckypool.org:3344", "https://yenten.luckypool.org/index.php?page=register", "stratum.luckypool.org", "" , "Username" },
+			{ "YENTEN LUCKY POOL (HIGH LOW DIFF)", "stratum+tcp://stratum.luckypool.org:3399", "https://yenten.luckypool.org/index.php?page=register", "stratum.luckypool.org", "" , "Username"},
+			{ "YENTEN LUCKY POOL (FIXED DIFF 0.4)", "stratum+tcp://stratum.luckypool.org:3355", "https://yenten.luckypool.org/index.php?page=register", "stratum.luckypool.org", "" , "Username"},
+			{ "YENTEN LUCKY POOL (FIXED DIFF 1)", "stratum+tcp://stratum.luckypool.org:3333", "https://yenten.luckypool.org/index.php?page=register", "stratum.luckypool.org", "" , "Username"},
+			{ "NLPOOL", "stratum+tcp://mine.nlpool.nl:6244", "No", "mine.nlpool.nl", "c=YTN" , "Wallet" },
+			{ "SUPERNOVAS YENTEN POOL", "stratum+tcp://ytn.suprnova.cc:4932", "No", "ytn.suprnova.cc", "" , "Wallet" },
+			{ "BLOCK MASTERS EU", "stratum+tcp://eu.blockmasters.co:6236", "No", "eu.blockmasters.co", "" , "Wallet" },
+			{ "BLOCK MASTERS ASIA", "stratum+tcp://as.blockmasters.co:6236", "No", "as.blockmasters.co", "" , "Wallet" },
+			{ "BLOCK MASTERS USA", "stratum+tcp://blockmasters.co:6236", "No", "blockmasters.co", "" , "Wallet" },
+			{ "TROSS MINING POOL", "stratum+tcp://trossmining.de:6236", "No", "trossmining.de", "c=YTN" , "Wallet" },
+			{ "ZPOOL EU", "stratum+tcp://yespowerR16.eu.mine.zpool.ca:6534", "No", "yespowerR16.eu.mine.zpool.ca", "c=YTN,zap=YTN" , "Wallet" },
+			{ "ZPOOL ASIA", "stratum+tcp://yespowerR16.sea.mine.zpool.ca:6534", "No", "yespowerR16.sea.mine.zpool.ca", "c=YTN,zap=YTN" , "Wallet" },
+			{ "ZPOOL USA", "stratum+tcp://yespowerR16.na.mine.zpool.ca:6534", "No", "yespowerR16.na.mine.zpool.ca", "c=YTN,zap=YTN" , "Wallet" },
+			{ "PHI PHI POOL", "stratum+tcp://asia.phi-phi-pool.com:6333", "No", "asia.phi-phi-pool.com", "c=YTN" , "Wallet" },
+			{ "MATRIX POOL", "stratum+tcp://matrix-pool.info:63040", "No", "matrix-pool.info", "" , "Wallet" },
+			{ "AIKA POOL", "stratum+tcp://stratum.aikapool.com:7954", "https://aikapool.com/ytn/index.php?page=register", "stratum.aikapool.com", "" , "Username"}
+		 };
+		 DefaultPoolsList = DefaultPoolsList_t;
+		 ProfileName = Preferences.userRoot().node("cpu-miner-batch-configurator").get("lastprofilename", "default");
+		 ChangeProfile(ProfileName);
+		 
+		 LoadPoolList();
+		 	        	
+		 Pool.addItemListener(new ItemListener() {
+           public void itemStateChanged(ItemEvent e) {
+        	   if(e.getStateChange() == ItemEvent.DESELECTED) {
+        		   SaveSettings(e.getItem().toString());
+        		   SetDefaultSettings();
+        	   }
+        	   if(e.getStateChange() == ItemEvent.SELECTED) {
+        			   String LastPoolName = e.getItem().toString();
+	        		   ProfilePrefs.put("lastpool", LastPoolName);
+	        		   LastPool = ProfilePrefs.node(LastPoolName);
+	        		   LoadLastPool();
+        	   }
+            }
+         });
+		 
+		 Registration.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				 OpenRegistrationURL();
+			 }
+		 });
+		 	 
 	     AddUpdateElement(ShowCPU);
 		 AddUpdateElement(NoColor);
 		 AddUpdateElement(HideMinerStats);
@@ -247,8 +386,25 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 
 	     UpdateCommand();
 
+
+		//final IcmpPingUtil test = new IcmpPingUtil ();
 	}
 
+	protected void OpenRegistrationURL() {
+		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+		    try {
+				Desktop.getDesktop().browse(new URI(LastPoolRegistrationURL));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
 	private void AddUpdateElement(JComponent Element) {
 		if (Element instanceof JComboBox) {
 			((JComboBox<String>) Element).addItemListener(new ItemListener() {
@@ -306,75 +462,83 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 			contentPaneLayout.setHorizontalGroup(
 				contentPaneLayout.createParallelGroup()
 					.addGroup(contentPaneLayout.createSequentialGroup()
-						.addGap(6, 6, 6)
-						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup()
+							.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+								.addComponent(PoolLabel, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(Pool, GroupLayout.PREFERRED_SIZE, 288, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+								.addGap(5, 5, 5)
+								.addComponent(Solo))
+							.addComponent(AditionalParametersLabel)
 							.addGroup(contentPaneLayout.createSequentialGroup()
 								.addGroup(contentPaneLayout.createParallelGroup()
-									.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createParallelGroup()
-										.addComponent(CloseMiners, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-										.addComponent(StartMining, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
 									.addComponent(HideMinerStats)
-									.addComponent(ShowCPU))
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(contentPaneLayout.createParallelGroup()
+									.addComponent(ShowCPU)
+									.addComponent(NoColor))
+								.addGap(0, 0, 0)
+								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
 									.addComponent(Pause)
-									.addComponent(Benchmark, GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-									.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
 									.addComponent(InfiniteLoop))
 								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 									.addGroup(contentPaneLayout.createSequentialGroup()
-										.addGap(18, 18, 18)
-										.addGroup(contentPaneLayout.createParallelGroup()
-											.addComponent(DebugCheck)
-											.addComponent(BackgroundMode))
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 4, Short.MAX_VALUE))
-									.addGroup(contentPaneLayout.createSequentialGroup()
-										.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-										.addComponent(DefaultSettings, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))))
-							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
-								.addComponent(PoolLabel)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(Pool, 0, 363, Short.MAX_VALUE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE))
+										.addComponent(DebugCheck)
+										.addGap(68, 68, 68))
+									.addComponent(BackgroundMode)))
 							.addGroup(contentPaneLayout.createSequentialGroup()
 								.addGroup(contentPaneLayout.createParallelGroup()
+									.addComponent(NumberThreadsLabel)
 									.addComponent(WalletAdressLabel)
 									.addComponent(NamePCLabel)
 									.addComponent(PasswordLabel)
-									.addComponent(CPUPriorityLabel)
-									.addComponent(NumberThreadsLabel))
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(CPUPriorityLabel))
+								.addGap(5, 5, 5)
 								.addGroup(contentPaneLayout.createParallelGroup()
-									.addGroup(contentPaneLayout.createSequentialGroup()
-										.addGroup(contentPaneLayout.createParallelGroup()
-											.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-											.addGroup(contentPaneLayout.createSequentialGroup()
-												.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-													.addComponent(Password, GroupLayout.Alignment.LEADING)
-													.addComponent(CPUPriority, GroupLayout.Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-													.addComponent(NumberThreads, GroupLayout.Alignment.LEADING, 0, 155, Short.MAX_VALUE))
-												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
-										.addGroup(contentPaneLayout.createParallelGroup()
-											.addGroup(contentPaneLayout.createSequentialGroup()
-												.addGap(5, 5, 5)
-												.addComponent(AlghorytmLabel)
-												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(Alghorytm, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE))
-											.addGroup(contentPaneLayout.createSequentialGroup()
-												.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-												.addComponent(ApportionCPU))))
-									.addComponent(WalletAdress, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)))
-							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
+									.addComponent(CPUPriority, 0, 211, Short.MAX_VALUE)
+									.addComponent(NumberThreads, 0, 211, Short.MAX_VALUE)
+									.addComponent(Password, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+									.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+									.addComponent(WalletAdress, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+								.addGap(5, 5, 5)
+								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+									.addComponent(Registration, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(ApportionCPU)
+									.addComponent(Ping, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addGroup(contentPaneLayout.createSequentialGroup()
 								.addComponent(TimeStratumLabel)
+								.addGap(5, 5, 5)
+								.addGroup(contentPaneLayout.createParallelGroup()
+									.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+									.addComponent(AditionalParameters, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+								.addComponent(StartMining, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)))
-						.addGap(40, 40, 40))
-					.addGroup(contentPaneLayout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(NoColor)
-						.addContainerGap(343, Short.MAX_VALUE))
+								.addComponent(SaveBAT, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(DefaultSettings, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+								.addComponent(CloseMiners, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(Benchmark)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(Profiles, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+							.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+								.addComponent(PoolURLLabel)
+								.addGap(5, 5, 5)
+								.addComponent(PoolURL, GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+							.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+								.addComponent(CoinTypeLabel)
+								.addGap(5, 5, 5)
+								.addComponent(CoinType, GroupLayout.PREFERRED_SIZE, 156, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(AlghorytmLabel)
+								.addGap(5, 5, 5)
+								.addComponent(Alghorytm, 0, 156, Short.MAX_VALUE)))
+						.addGap(5, 5, 5))
 			);
+			contentPaneLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {Benchmark, CloseMiners, SaveBAT, StartMining});
 			contentPaneLayout.setVerticalGroup(
 				contentPaneLayout.createParallelGroup()
 					.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
@@ -382,61 +546,79 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(Pool)
 							.addComponent(PoolLabel)
-							.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(AddPool, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+							.addComponent(Solo))
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(CoinTypeLabel)
+							.addComponent(CoinType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(AlghorytmLabel)
+							.addComponent(Alghorytm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(PoolURL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(PoolURLLabel))
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(WalletAdressLabel)
-							.addComponent(WalletAdress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-							.addComponent(NamePCLabel, GroupLayout.Alignment.LEADING)
-							.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-								.addComponent(NamePC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(AlghorytmLabel)
-								.addComponent(Alghorytm, 0, 0, Short.MAX_VALUE)))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(WalletAdress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(Registration, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(NamePCLabel)
+							.addComponent(NamePC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(Ping, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(PasswordLabel)
 							.addComponent(Password, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(CPUPriorityLabel)
 							.addComponent(CPUPriority, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(ApportionCPU)
 							.addComponent(NumberThreadsLabel)
-							.addComponent(NumberThreads, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-							.addComponent(ApportionCPU))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(NumberThreads, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(TimeStratumLabel)
+							.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
+						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(AditionalParametersLabel)
+							.addComponent(AditionalParameters, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 							.addGroup(contentPaneLayout.createSequentialGroup()
-								.addGroup(contentPaneLayout.createParallelGroup()
-									.addComponent(TimeStratumLabel)
-									.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-								.addGap(18, 18, 18)
 								.addComponent(NoColor, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(ShowCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(HideMinerStats, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+								.addGroup(contentPaneLayout.createParallelGroup()
+									.addComponent(InfiniteLoop, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+									.addComponent(DebugCheck, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-									.addComponent(InfiniteLoop, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-									.addComponent(ShowCPU, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)))
-							.addComponent(DebugCheck, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-							.addComponent(BackgroundMode, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-							.addComponent(Pause)
-							.addComponent(HideMinerStats, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(Pause)
+									.addComponent(BackgroundMode, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))))
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(StartMining)
-							.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addComponent(DefaultSettings))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 							.addComponent(CloseMiners)
 							.addComponent(Benchmark)
-							.addComponent(DefaultSettings))
-						.addContainerGap())
+							.addComponent(Profiles))
+						.addGap(0, 0, 0))
 			);
-			window.setSize(485, 390);
+			
+			window.setSize(455, 435);
 			 
 	        window.pack();
 	        
@@ -451,28 +633,35 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 			        NewPoolName
 			};
 	    int result = JOptionPane.showConfirmDialog(window, AddPoolInputField, "Add New Pool", JOptionPane.PLAIN_MESSAGE);
+	    	    
 	    if (result == JOptionPane.OK_OPTION && NewPoolName.getText().length()>0) {
 	        Pool.addItem(NewPoolName.getText());
 	        Pool.setSelectedIndex(Pool.getItemCount()-1);
 	        UpdateCommand();
-	    } else {
-	        log ("cancel");
-	    }
+	    } 
+	    
 	}
 	
 	private void CreateBat(String FileNameBAT) throws IOException {
+		SaveSettings((String) Pool.getSelectedItem());
 		File file=new File(FileNameBAT);
 		FileOutputStream fos = new FileOutputStream(file);
 		DataOutputStream dataOutputStream = new DataOutputStream(fos);
+		
 		if(InfiniteLoop.isSelected()) {
 			dataOutputStream.writeBytes(":infiniteloop");
 			dataOutputStream.writeBytes(System.getProperty("line.separator"));
 		}
+		
+		
 		dataOutputStream.writeBytes(CommandOutput);
+		
+		
 		if(Pause.isSelected()) {
 			dataOutputStream.writeBytes(System.getProperty("line.separator"));
 			dataOutputStream.writeBytes("pause");
 		}
+		
 		if(InfiniteLoop.isSelected()) {
 			dataOutputStream.writeBytes(System.getProperty("line.separator"));
 			dataOutputStream.writeBytes("goto infiniteloop");
@@ -482,12 +671,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 
 	private void CloseMinersCommand(JFrame win) {
 		try {
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer.exe");
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-aes-sse42.exe");
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-avx.exe");
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-avx2.exe");
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-avx2-sha.exe");
-		 		Runtime.getRuntime().exec("taskkill /F /IM cpuminer-sse2.exe");
+		 		Runtime.getRuntime().exec("taskkill /F /FI \"IMAGENAME eq cpuminer*\"");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cmd.exe");
 		 		JOptionPane.showMessageDialog(win,
 	 			    "All your miners closed.",
@@ -500,7 +684,6 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	
 	private void StartMiningAction(JFrame win) {
 		try {
- 		  SaveSettings();
  		  CreateBat("start_mining.bat");
  		  String path="cmd /c start start_mining.bat";
  		  Runtime rn=Runtime.getRuntime();
@@ -518,7 +701,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	
 	private void StartBenchmark(JFrame win) {
 		try {
-			SaveSettings();
+			SaveSettings((String) Pool.getSelectedItem());
 			String path="cmd /c start \"\" " + CommandOutput + " --benchmark ";
 			Runtime rn=Runtime.getRuntime();
 	 		rn.exec(path);
@@ -561,7 +744,6 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		NumberThreads.setSelectedIndex(cores-1);
 		ApportionCPU.setSelected(false);
 		Alghorytm.setSelectedIndex(0);
-		Pool.setSelectedItem(PoolDefault);
 		WalletAdress.setText("");
 		NamePC.setText("");
 		CPUPriority.setSelectedIndex(2);
@@ -570,68 +752,177 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		InfiniteLoop.setSelected(false);
 		Password.setText("");
 		TimeStratum.setValue(300);
-		SaveSettings();
-	}
-
-	private void LoadSettings() {
-		ShowCPU.setSelected(userPrefs.getBoolean("showcpu", false));
-		NoColor.setSelected(userPrefs.getBoolean("nocolor", false));
-		HideMinerStats.setSelected(userPrefs.getBoolean("hidedif", false));
-		BackgroundMode.setSelected(userPrefs.getBoolean("backgroundmode", false));
-		NumberThreads.setSelectedIndex(userPrefs.getInt("numberthreads", cores-1));
-		ApportionCPU.setSelected(userPrefs.getBoolean("apportioncpu", false));
-		Alghorytm.setSelectedIndex(userPrefs.getInt("alghorytm", 0));
-		WalletAdress.setText(userPrefs.get("walletadress", ""));
-		NamePC.setText(userPrefs.get("namepc", ""));
-		CPUPriority.setSelectedIndex(userPrefs.getInt("cpupriority", 2));
-		DebugCheck.setSelected(userPrefs.getBoolean("debug", false));
-		Pause.setSelected(userPrefs.getBoolean("pause", false));
-		InfiniteLoop.setSelected(userPrefs.getBoolean("infiniteloop", false));
-		Password.setText(userPrefs.get("password", ""));
-		TimeStratum.setValue(Integer.parseInt(userPrefs.get("timestratum", "300")));
-		
-		String[] PoolsList = userPrefs.get("pools", PoolDefault).split("@");
-		for (int i=0;i<PoolsList.length;i++) {
-			Pool.addItem(PoolsList[i]);
-		}
-		
-		String PoolItemName = userPrefs.get("pool", PoolDefault);
-		Pool.setSelectedItem(PoolItemName);
-		
-		 GetProcessorType();
-	}
-
-	private void SaveSettings() {	
-		userPrefs.putBoolean("showcpu", ShowCPU.isSelected());
-		userPrefs.putBoolean("nocolor", NoColor.isSelected());
-		userPrefs.putBoolean("apportioncpu", ApportionCPU.isSelected());
-		userPrefs.putBoolean("hidedif", HideMinerStats.isSelected());
-		userPrefs.putBoolean("backgroundmode", BackgroundMode.isSelected());
-		userPrefs.putInt("numberthreads", NumberThreads.getSelectedIndex());
-		userPrefs.putInt("alghorytm", Alghorytm.getSelectedIndex());
-		userPrefs.put("walletadress", WalletAdress.getText());
-		userPrefs.put("namepc", NamePC.getText());
-		userPrefs.putInt("cpupriority", CPUPriority.getSelectedIndex());
-		userPrefs.putBoolean("debug", DebugCheck.isSelected());
-		userPrefs.putBoolean("pause", Pause.isSelected());
-		userPrefs.putBoolean("infiniteloop", InfiniteLoop.isSelected());
-		userPrefs.put("password", Password.getText());
-		userPrefs.put("timestratum", TimeStratum.getValue().toString());
-		StringBuilder Pools = new StringBuilder();
-		for (int i = 0; i < Pool.getItemCount(); i++) {
-			if (Pool.getItemAt(i)!=PoolDefault) {
-				Pools.append(Pool.getItemAt(i)).append("@");
+		boolean isPoolCustom = true;
+		for (int i=0;i<DefaultPoolsList.length;i++) {
+			if (DefaultPoolsList[i][0].equals(LastPool.name())) {
+				isPoolCustom = false;
 			}
 		}
-		userPrefs.put("pools", Pools.toString());
-		userPrefs.put("pool", Pool.getSelectedItem().toString());
+		if (isPoolCustom == true) PoolURL.setText("");
+		AditionalParameters.setText("");
+	}
+
+	private void ChangeProfile(String profile_name) {
+		ProfilePrefs = Preferences.userRoot().node("cpu-miner-batch-configurator").node(profile_name);
+		
 	}
 	
+	private void LoadPoolList() {
+		//custom pools
+		//stored pools 
+		int CountSavedPools = 0;
+		try {
+			CountSavedPools = ProfilePrefs.childrenNames().length;
+			
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		if (CountSavedPools>0) {
+			String[] SavedPools = null;
+			try {
+				SavedPools = ProfilePrefs.childrenNames();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+			
+			int found = 0;
+			
+			for (int i=0;i<CountSavedPools;i++) {
+				found = 0;
+				for (int j=0;j<DefaultPoolsList.length;j++) {
+					if (SavedPools[i].equals(DefaultPoolsList[j][0])) {
+						found = 1;
+					}
+				}
+				if (found==0) {
+					String tmp_poolname = SavedPools[i];
+					if (tmp_poolname!="") {
+						Pool.addItem(tmp_poolname);
+					}
+				}
+			}
+		}
+				
+		//default pools
+		for (int i=0;i<DefaultPoolsList.length;i++) {
+			Pool.addItem(DefaultPoolsList[i][0]);
+		}
+		
+		Pool.removeItemAt(0);
+
+		LoadLastPool();		
+	}
+	
+	private void LoadLastPool() {
+		String LastPoolName = ProfilePrefs.get("lastpool", PoolDefault);
+		if (LastPoolName == null | LastPoolName == "") LastPoolName = PoolDefault;
+		LastPool = ProfilePrefs.node(LastPoolName);
+
+		Pool.setSelectedItem(LastPoolName);
+		
+		try {
+			LoadSettings();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//***do action
+	}
+				
+	private void LoadSettings() throws InterruptedException {
+		ShowCPU.setSelected(LastPool.getBoolean("showcpu", false));
+		NoColor.setSelected(LastPool.getBoolean("nocolor", false));
+		HideMinerStats.setSelected(LastPool.getBoolean("hidedif", false));
+		BackgroundMode.setSelected(LastPool.getBoolean("backgroundmode", false));
+		NumberThreads.setSelectedIndex(LastPool.getInt("numberthreads", cores-1));
+		ApportionCPU.setSelected(LastPool.getBoolean("apportioncpu", false));
+		Alghorytm.setSelectedIndex(LastPool.getInt("alghorytm", 0));
+		WalletAdress.setText(LastPool.get("walletadress", ""));
+		NamePC.setText(LastPool.get("namepc", ""));
+		CPUPriority.setSelectedIndex(LastPool.getInt("cpupriority", 2));
+		DebugCheck.setSelected(LastPool.getBoolean("debug", false));
+		Pause.setSelected(LastPool.getBoolean("pause", false));
+		InfiniteLoop.setSelected(LastPool.getBoolean("infiniteloop", false));
+		Password.setText(LastPool.get("password", ""));
+		TimeStratum.setValue(Integer.parseInt(LastPool.get("timestratum", "300")));	
+		AditionalParameters.setText(LastPool.get("aditionalparameters", ""));
+		
+		boolean isPoolCustom = true;
+		for (int i=0;i<DefaultPoolsList.length;i++) {
+			if (DefaultPoolsList[i][0].equals(LastPool.name())) {
+				isPoolCustom = false;
+				//registration
+				Registration.setVisible(true);
+				if (DefaultPoolsList[i][2].equals("No")) {
+					LastPoolRegistrationURL = "";
+					Registration.setEnabled(false);
+				} else {
+					LastPoolRegistrationURL = DefaultPoolsList[i][2];
+					Registration.setEnabled(true);
+				}
+				//poolurl
+				PoolURL.setText(DefaultPoolsList[i][1]);
+				PoolURL.setEnabled(false);
+				//setwallet or username
+				WalletAdressLabel.setText(DefaultPoolsList[i][5]);
+				//ping
+				Ping.setVisible(false);
+				//Ping.setVisible(true);
+				//Ping.setText(ping(DefaultPoolsList[i][3]));
+			}
+		}
+		
+		if (isPoolCustom == true) {
+			LastPoolRegistrationURL = "";
+			Registration.setEnabled(false);
+			Registration.setVisible(false);
+			PoolURL.setEnabled(true);
+			PoolURL.setText(LastPool.get("poolurl", ""));
+			WalletAdressLabel.setText("Wallet/Username");
+			Ping.setVisible(false);
+		}
+		
+		
+		GetProcessorType();
+	}
+	
+	private void SaveSettings(String LastPoolName) {	
+		//сохранение выбранного профиля в будущем
+		Preferences.userRoot().node("cpu-miner-batch-configurator").put("lastprofilename", "default");
+		
+		if (LastPoolName == null | LastPoolName == "") LastPoolName = PoolDefault;
+		ProfilePrefs.put("lastpool", LastPoolName);
+		LastPool = ProfilePrefs.node(LastPoolName);
+				
+		SavePool();
+	}
+	
+	private void SavePool() {
+		LastPool.put("poolurl", PoolURL.getText());
+		LastPool.putBoolean("showcpu", ShowCPU.isSelected());
+		LastPool.putBoolean("nocolor", NoColor.isSelected());
+		LastPool.putBoolean("apportioncpu", ApportionCPU.isSelected());
+		LastPool.putBoolean("hidedif", HideMinerStats.isSelected());
+		LastPool.putBoolean("backgroundmode", BackgroundMode.isSelected());
+		LastPool.putInt("numberthreads", NumberThreads.getSelectedIndex());
+		LastPool.putInt("alghorytm", Alghorytm.getSelectedIndex());
+		LastPool.put("walletadress", WalletAdress.getText());
+		LastPool.put("namepc", NamePC.getText());
+		LastPool.putInt("cpupriority", CPUPriority.getSelectedIndex());
+		LastPool.putBoolean("debug", DebugCheck.isSelected());
+		LastPool.putBoolean("pause", Pause.isSelected());
+		LastPool.putBoolean("infiniteloop", InfiniteLoop.isSelected());
+		LastPool.put("password", Password.getText());
+		LastPool.put("timestratum", TimeStratum.getValue().toString());		
+		LastPool.put("aditionalparameters", AditionalParameters.getText());
+	}
+
+	@SuppressWarnings("unused")
 	private void ExportSettings() {
 		try {
 			 log("save\\/");
-           userPrefs.exportNode(new FileOutputStream(SettingsName + ".xml"));
-           userPrefs.exportSubtree(System.out);
+           //ProfilePrefs.exportNode(new FileOutputStream(SettingsName + ".xml"));
+           ProfilePrefs.exportSubtree(System.out);
            log("save/\\");
        }
        catch(Exception e) {
@@ -639,18 +930,21 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
        }
 	}
 	
+	@SuppressWarnings("unused")
 	private void ImportSettings(){
 		try {
-            Preferences.importPreferences(new BufferedInputStream(new FileInputStream(SettingsName + ".xml")));
-            userPrefs = Preferences.userRoot().node(SettingsName);
+           // Preferences.importPreferences(new BufferedInputStream(new FileInputStream(SettingsName + ".xml")));
+           /// ProfilePrefs = Preferences.userRoot().node(SettingsName);
             log("load\\/");
-            userPrefs.exportSubtree(System.out);
+            //ProfilePrefs.exportSubtree(System.out);
             log("load/\\");
         }
         catch(Exception e) {
             e.printStackTrace();
         }
 	}
+	
+	
 	
 	private void GetProcessorType() {
 		/*System.out.println(System.getenv("PROCESSOR_IDENTIFIER"));
@@ -662,9 +956,10 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		CentralProcessor cpu = hal.getProcessor();
 		CentralProcessor.ProcessorIdentifier processorIdentifier = cpu.getProcessorIdentifier();
 		log(processorIdentifier.getMicroarchitecture());*/
-		
+		//SystemInfo o = new oshi.SystemInfo();
+		//log(o.getHardware().getProcessor();
 	}
-
+	
 	private void UpdateCommand() {
 		String CommandText = "";
 		
@@ -672,14 +967,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		try {
 			MinerPath = "\"" + new File(".").getCanonicalPath() + "\\cpuminer-bin\\cpuminer-sse2.exe\"";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		CommandText = CommandText + MinerPath + " ";
 		
 		
-		CommandText = CommandText + "-o " + Pool.getSelectedItem() + " ";
+		CommandText = CommandText + "-o " + PoolURL.getText() + " ";
 		
 		
 		CommandText = CommandText + "-a " + Alghorytm.getSelectedItem().toString() + " ";
@@ -701,8 +995,10 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 			if(ApportionCPU.isSelected()) {
 				CommandText = CommandText + "--cpu-affinity 0 ";
 			}
+			ApportionCPU.setEnabled(true);
 		} else {
 			ApportionCPU.setSelected(false);
+			ApportionCPU.setEnabled(false);
 		}
 		
 		CommandText = CommandText + "--cpu-priority " + CPUPriority.getSelectedIndex() + " ";
@@ -726,6 +1022,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		if(DebugCheck.isSelected()) {
 			CommandText = CommandText + "-D ";
 		}
+		
+		CommandText = CommandText + AditionalParameters.getText();
+		
 				
 		CommandOutput = CommandText;
 	}
