@@ -1,14 +1,17 @@
-# YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR
-Удобный графический запуск CPU-only майнера.
+<h2>YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR v0.125</h2>
+<h3>Удобный графический запуск CPU-only майнера.</h3>
 
 Релиз рабочей версии. Пользуйтесь. Ссылки на донат не будет.
 
-<h2>v0.124 Windows x64 Release build</h2>
+Использована новая версия майнера от JayDDee версии 3.15.6.
+Исправлены некоторые параметры. убран параметр -hide diff потому что в этом майнере его нет. но добавлен параметр отображения стаатистики минёра.
 
-> <a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/tag/v0.124>Download</a>
+<h3>update:</h3>
 
-Screenshot:
+* Добавлен список серверов и исправлены мелкие баги.
 
-<img src=https://i.imgur.com/4kojEqE.png>
+<a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/tag/v0.125>Download</a>
 
-VirusTotal <a href=https://www.virustotal.com/gui/file/f273bd6115ad1cbc16de2e5001680d9ddead31440d5a95ab9dfbe33ea75fce92/detection>check</a>
+<h3>Screenshot</h3>
+<img src=https://i.imgur.com/ZYNxicu.png>
+
