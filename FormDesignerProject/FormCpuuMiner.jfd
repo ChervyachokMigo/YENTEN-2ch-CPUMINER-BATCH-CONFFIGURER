@@ -13,11 +13,11 @@
        <class>org.jdesktop.layout.GroupLayout</class> 
        <void method="setProperty"> 
         <string>$horizontalGroup</string> 
-        <string>par l {seq {space :5:5:p, par l {seq t {comp PoolLabel::::25:x, space :::p, comp Pool:::p:288:p, space :::p, comp AddPool:::p:57:p, space :p:5:p, comp Solo:::p::p}, comp AditionalParametersLabel::l:p::p, seq l {par l {comp HideDiff::l:p::p:1, comp HideCPU::l:p::p:1, comp NoColor::l:p::p:1}, space :p:0:p, par l:::p {comp Pause::l:p::p:1, comp InfiniteLoop:::p::p}, par t {seq {comp DebugCheck:::p::p:1, space :p:68:p}, comp BackgroundMode::t:p::p:1}}, seq l {par l {comp NumberThreadsLabel::l:p::p:1, comp WalletAdressLabel::l:p::p:1, comp NamePCLabel::l:p::p:1, comp PasswordLabel::l:p::p, comp CPUPriorityLabel::l:p::p:1}, space :p:5:p, par l {comp CPUPriority::l::211:x:1, comp NumberThreads::l::211:x:1, comp Password::l::211:x:1, comp NamePC::l::211:x:1, comp WalletAdress::l::211:x:1}, space :p:5:p, par l:::p {comp Registration::l:::x:1, comp ApportionCPU::l:p::p:1, comp Ping::l:::x:1}}, seq l {comp TimeStratumLabel:::p::p, space :p:5:p, par l {comp TimeStratum:::p:94:p, comp AditionalParameters::l::305:x:1}}, seq l:::1 {comp StartMining:1::p:145:p, space :::p, comp SaveBAT:1::p:130:p, space :::p, comp DefaultSettings::::133:x}, seq l {comp CloseMiners:1::p:145:p, space :::p, comp Benchmark:1::p::p, space :p::p, comp Profiles::::133:x}, seq t {comp PoolURLLabel:::p::p, space :p:5:p, comp PoolURL::::369:x}, seq t {comp CoinTypeLabel:::p::p, space :p:5:p, comp CoinType:::p:156:p, space :::p, comp AlghorytmLabel:::p::p, space :p:5:p, comp Alghorytm::::156:x:1}}, space :5:5:p}}</string> 
+        <string>par l {seq t {space :5:5:p, par t {comp AditionalParametersLabel::l:p::p, seq l {par l {comp HideDiff::l:p::p:1, comp ShowCPU::l:p::p:1, comp NoColor::l:p::p:1}, space :p:0:p, par l:::p {comp Pause::l:p::p:1, comp InfiniteLoop:::p::p}, par t {seq t {comp DebugCheck:::p::p:1, space :p:68:p}, comp BackgroundMode::t:p::p:1}}, seq l {par l {comp NumberThreadsLabel::l:p::p:1, comp WalletAdressLabel::l:p::p:1, comp NamePCLabel::l:p::p:1, comp PasswordLabel::l:p::p, comp CPUPriorityLabel::l:p::p:1}, space :p::p, par l {seq l {par l {comp CPUPriority::l::202:x:1, comp NumberThreads::l::202:x:1, comp Password::l::202:x:1, comp NamePC::l::202:x:1}, space :p:5:p, par t {comp Registration::::116:x:1, comp Ping::l::116:x:1, comp ApportionCPU::l:p::p:1}}, seq t {comp WalletAdress::::267:x, space :p:2:p, comp AddWallet:::p:26:p, space :p:2:p, comp DelWallet:::p:26:p}}}, seq l {comp TimeStratumLabel:::p::p, space :p:5:p, par l {comp TimeStratum:::p:94:p, comp AditionalParameters::l::305:x:1}}, seq l:::1 {comp StartMining:1::p:145:p, space :::p, comp SaveBAT:1::p:130:p, space :::p, comp DefaultSettings::::133:x}, seq l {comp CloseMiners:1::p:145:p, space :::p, comp Benchmark:1::p::p, space :p::p, comp Profiles::::133:x}, seq l {comp PoolLabel:::p::p, space :p:5:p, comp Pool::::298:x, space :p:2:p, comp AddPool:::p:26:p, space :p:2:p, comp DelPool:::p:26:p, space :::p, comp Solo:::p::p}, seq t {comp PoolURLLabel:::p::p, space :p:5:p, comp PoolURL::::369:x}, seq t {comp CoinTypeLabel:::p::p, space :p:5:p, comp CoinType:::p:156:p, space :::p, comp AlghorytmLabel:::p::p, space :p:5:p, comp Alghorytm::::156:x:1}}, space :p:5:p}}</string> 
        </void> 
        <void method="setProperty"> 
         <string>$verticalGroup</string> 
-        <string>par l {seq t {space :::p, par b {comp Pool::b:::x:1, comp PoolLabel::b:p::p, comp AddPool::b:p:26:p, comp Solo::b:p::p}, space :p:5:p, par b {comp CoinTypeLabel::b:p::p, comp CoinType::b:p::p, comp AlghorytmLabel::b:p::p, comp Alghorytm::b:p::p:1}, space :p:5:p, par b {comp PoolURL::b:p::p, comp PoolURLLabel::b:p::p}, space :p:5:p, par b {comp WalletAdressLabel::b:p::p, comp WalletAdress::b:p::p, comp Registration::b:p:18:p}, space :p:5:p, par b {comp NamePCLabel::b:p::p, comp NamePC::b:p::p:1, comp Ping::b:p:13:p}, space :p:5:p, par b {comp PasswordLabel::b:p::p, comp Password::b:p::p}, space :p:5:p, par b {comp CPUPriorityLabel::b:p::p:1, comp CPUPriority::b:p:20:p:1}, space :p:5:p, par b {comp ApportionCPU::b:p::p:1, comp NumberThreadsLabel::b:p::p, comp NumberThreads::b:p:20:p}, space :p:5:p, par b {comp TimeStratumLabel::b:p::p, comp TimeStratum::b:p:20:p}, space :p:5:p, par b {comp AditionalParametersLabel::b:p::p, comp AditionalParameters::b:p::p}, space :p:5:p, par t {seq t {comp NoColor:::p:19:p, space :::p, comp HideCPU:::p:19:p, space :p::p, comp HideDiff:::p:19:p:1}, seq t {par l {comp InfiniteLoop::t:p:19:p, comp DebugCheck::t:p:16:p}, space :::p, par b {comp Pause::b:p::p, comp BackgroundMode::b:p:21:p:1}}}, space :p:5:p, par b {comp StartMining::b:p::p:1, comp SaveBAT::b:::x:1, comp DefaultSettings::b:p::p:1}, space :::p, par b {comp CloseMiners::b:p::p, comp Benchmark::b:p::p:1, comp Profiles::b:p::p}, space :p:0:p}}</string> 
+        <string>par l {seq t {space :p:12:p, par b {comp PoolLabel::b:p::p, comp Pool::b:::x:1, comp Solo::b:p::p, comp DelPool::b:p:26:p, comp AddPool::b:p:26:p}, space :p:5:p, par b {comp CoinTypeLabel::b:p::p, comp CoinType::b:p::p, comp AlghorytmLabel::b:p::p, comp Alghorytm::b:p::p:1}, space :p:5:p, par b {comp PoolURL::b:p::p, comp PoolURLLabel::b:p::p}, space :p:5:p, par b {comp WalletAdressLabel::b:p::p, comp DelWallet::b:p:26:p, comp AddWallet::b:p:26:p, comp WalletAdress::b:p::p}, space :p:5:p, par b {comp NamePCLabel::b:p::p, comp NamePC::b:p::p:1, comp Registration::b:p:18:p}, space :p:5:p, par b {comp PasswordLabel::b:p::p, comp Password::b:p::p, comp Ping::b:p:13:p}, space :p:5:p, par b {comp CPUPriorityLabel::b:p::p:1, comp CPUPriority::b:p:20:p:1}, space :p:5:p, par b {comp ApportionCPU::b:p::p:1, comp NumberThreadsLabel::b:p::p, comp NumberThreads::b:p:20:p}, space :p:5:p, par b {comp TimeStratumLabel::b:p::p, comp TimeStratum::b:p:20:p}, space :p:5:p, par b {comp AditionalParametersLabel::b:p::p, comp AditionalParameters::b:p::p}, space :p:5:p, par t {seq t {comp NoColor:::p:19:p, space :::p, comp ShowCPU:::p:19:p, space :p::p, comp HideDiff:::p:19:p:1}, seq t {par l {comp InfiniteLoop::t:p:19:p, comp DebugCheck::t:p:16:p}, space :::p, par b {comp Pause::b:p::p, comp BackgroundMode::b:p:21:p:1}}}, space :p:5:p, par b {comp StartMining::b:p::p:1, comp SaveBAT::b:::x:1, comp DefaultSettings::b:p::p:1}, space :::p, par b {comp CloseMiners::b:p::p, comp Benchmark::b:p::p:1, comp Profiles::b:p::p}, space :p:8:p}}</string> 
        </void> 
       </object> 
       <void method="setProperty"> 
@@ -103,22 +103,8 @@
          <string>text</string> 
          <string>Wallet/Username</string> 
         </void> 
-        <void method="setProperty"> 
-         <string>labelFor</string> 
-         <object class="com.jformdesigner.model.FormReference"> 
-          <string>WalletAdress</string> 
-         </object> 
-        </void> 
         <void property="name"> 
          <string>WalletAdressLabel</string> 
-        </void> 
-       </object> 
-      </void> 
-      <void method="add"> 
-       <object class="com.jformdesigner.model.FormComponent"> 
-        <string>javax.swing.JTextField</string> 
-        <void property="name"> 
-         <string>WalletAdress</string> 
         </void> 
        </object> 
       </void> 
@@ -217,10 +203,10 @@
         <string>javax.swing.JCheckBox</string> 
         <void method="setProperty"> 
          <string>text</string> 
-         <string>Hide CPU Hashmeter</string> 
+         <string>Show CPU Hashmeter</string> 
         </void> 
         <void property="name"> 
-         <string>HideCPU</string> 
+         <string>ShowCPU</string> 
         </void> 
        </object> 
       </void> 
@@ -250,7 +236,7 @@
         <string>javax.swing.JCheckBox</string> 
         <void method="setProperty"> 
          <string>text</string> 
-         <string>Don&apos;t display diff</string> 
+         <string>HideMinerStats</string> 
         </void> 
         <void property="name"> 
          <string>HideDiff</string> 
@@ -276,6 +262,15 @@
          <string>text</string> 
          <string>Start miner</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object id="Color0" class="java.awt.Color"> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>255</int> 
+         </object> 
+        </void> 
         <void property="name"> 
          <string>StartMining</string> 
         </void> 
@@ -288,6 +283,10 @@
          <string>text</string> 
          <string>Default Settings</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
+        </void> 
         <void property="name"> 
          <string>DefaultSettings</string> 
         </void> 
@@ -298,11 +297,11 @@
         <string>javax.swing.JButton</string> 
         <void method="setProperty"> 
          <string>text</string> 
-         <string>Add</string> 
+         <string>+</string> 
         </void> 
         <void method="setProperty"> 
          <string>background</string> 
-         <object class="java.awt.Color"> 
+         <object id="Color1" class="java.awt.Color"> 
           <int>204</int> 
           <int>204</int> 
           <int>204</int> 
@@ -315,7 +314,7 @@
         </void> 
         <void method="setProperty"> 
          <string>margin</string> 
-         <object class="java.awt.Insets"> 
+         <object id="Insets0" class="java.awt.Insets"> 
           <int>2</int> 
           <int>0</int> 
           <int>2</int> 
@@ -369,6 +368,10 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Start benchmark</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
         </void> 
         <void property="name"> 
          <string>Benchmark</string> 
@@ -448,6 +451,10 @@
          <string>text</string> 
          <string>Save BAT File</string> 
         </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
+        </void> 
         <void property="name"> 
          <string>SaveBAT</string> 
         </void> 
@@ -459,6 +466,10 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Close All Miners</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
         </void> 
         <void property="name"> 
          <string>CloseMiners</string> 
@@ -522,7 +533,20 @@
         <string>javax.swing.JButton</string> 
         <void method="setProperty"> 
          <string>text</string> 
-         <string>Registration</string> 
+         <string>Pool Registration</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object class="java.awt.Insets"> 
+          <int>2</int> 
+          <int>2</int> 
+          <int>2</int> 
+          <int>2</int> 
+         </object> 
         </void> 
         <void property="name"> 
          <string>Registration</string> 
@@ -547,6 +571,10 @@
         <void method="setProperty"> 
          <string>text</string> 
          <string>Profiles...</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color0"/> 
         </void> 
         <void property="name"> 
          <string>Profiles</string> 
@@ -579,6 +607,88 @@
         </void> 
        </object> 
       </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>+</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object id="Insets1" class="java.awt.Insets"> 
+          <int>2</int> 
+          <int>2</int> 
+          <int>2</int> 
+          <int>2</int> 
+         </object> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object id="Color2" class="java.awt.Color"> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>204</int> 
+          <int>255</int> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>AddWallet</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>-</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color1"/> 
+        </void> 
+        <void method="setProperty"> 
+         <string>icon</string> 
+         <object class="com.jformdesigner.model.FormObject" field="NULL_VALUE"/> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object idref="Insets0"/> 
+        </void> 
+        <void property="name"> 
+         <string>DelPool</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>-</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>margin</string> 
+         <object idref="Insets1"/> 
+        </void> 
+        <void method="setProperty"> 
+         <string>background</string> 
+         <object idref="Color2"/> 
+        </void> 
+        <void property="name"> 
+         <string>DelWallet</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JComboBox</string> 
+        <void property="name"> 
+         <string>WalletAdress</string> 
+        </void> 
+       </object> 
+      </void> 
       <void property="name"> 
        <string>this</string> 
       </void> 
@@ -588,8 +698,8 @@
       <void method="setProperty"> 
        <string>location</string> 
        <object class="java.awt.Point"> 
-        <int>320</int> 
-        <int>175</int> 
+        <int>325</int> 
+        <int>180</int> 
        </object> 
       </void> 
       <void method="setProperty"> 
