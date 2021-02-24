@@ -726,14 +726,33 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	        window.setVisible(true);
 	}
 	
+	private String GetEscapedPathString(String inputPath) {
+		final int[] illegalChars = {34, 60, 62, 124, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 58, 42, 63, 92, 47};
+		
+		    Arrays.sort(illegalChars);
+		
+		
+		    StringBuilder cleanName = new StringBuilder();
+		    for (int i = 0; i < inputPath.length(); i++) {
+		        int c = (int)inputPath.charAt(i);
+		        if (Arrays.binarySearch(illegalChars, c) < 0) {
+		            cleanName.append((char)c);
+		        }
+		    }
+		    return cleanName.toString();
+		
+	}
+	
 	private String getTitle() {
-		return Pool.getSelectedItem()+
+		String Result = ((String)Pool.getSelectedItem()).trim()+
 				" ("+CoinType.getSelectedItem()+") ["+
-				NumberThreads.getSelectedItem()+" Threads]"+
-				" Priority:"+CPUPriority.getSelectedItem()+
+				NumberThreads.getSelectedItem()+" Threads] "+
+				CPUPriority.getSelectedItem()+" Priority"+
 				(DebugCheck.isSelected()?" -Debug mode":"")+
-				" "+AditionalParameters.getText();
-				
+				(AditionalParameters.getText().length()>0?" ":"")+
+				AditionalParameters.getText().trim();
+	
+		return GetEscapedPathString(Result);
 	}
 	
 	private void CreateBat(String FileNameBAT) throws IOException {
@@ -824,11 +843,11 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		fileChooser.setFileFilter(new FileNameExtensionFilter("bat","bat"));
 		
 		if(fileChooser.showSaveDialog(window) == JFileChooser.APPROVE_OPTION) {
-		    String filename = fileChooser.getSelectedFile().toString();
-		    if (!filename.toString().endsWith(".bat"))
+		    String filename = fileChooser.getSelectedFile().getAbsolutePath();
+		    if ( ! filename.endsWith(".bat"))
 		        filename += ".bat";
 		    try {
-				CreateBat(fileChooser.getSelectedFile().getAbsolutePath());
+				CreateBat(filename);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
