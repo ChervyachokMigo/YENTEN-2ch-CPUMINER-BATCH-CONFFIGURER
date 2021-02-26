@@ -9,7 +9,7 @@
 
 * добавлен простой режим, не требующий никаких лишних действий, можно назвать gui майнер
 * кнопка старт превращается в кнопку стоп после старта (кнопка стоп теперь убивает все майнеры)
-* автоопределение кошелька
+* автоопределение кошелька в простом режиме
 
 <h2><a href=https://github.com/ChervyachokMigo/YENTEN-2ch-CPUMINER-BATCH-CONFFIGURER/releases/download/v0.135/YENTEN.2CH.BATCH.CONFIGURATOR.Windows.x64.Release.build.v0.135.rar>Download Windows x64 Release build v0.135</a></h2>
 
