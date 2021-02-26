@@ -1,7 +1,7 @@
 public class Main {
 	
 	public static void main(String[] args) {
-      new YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR("CPU Miner GUI batch configurator");
+      new YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR();
 	}
 
 }

@@ -11,13 +11,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -34,18 +38,26 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultFormatter;
 
 import org.apache.commons.lang3.ArrayUtils;
+
 
 
 public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
@@ -63,7 +75,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private JCheckBox DebugCheck;
 	
 	private JButton DefaultSettings;
-	private JButton StartMining;
+	private JToggleButton StartMining;
 	private JButton AddPool;
 	
 	private String CommandOutput;
@@ -117,18 +129,40 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private String TextMinerInBackground;
 	private String TextSaveDestination;
 	private String TextDeleteWallet;
-	private String TextDeletePool;	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+	private String TextDeletePool;
 	
-	public YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR(String windowName) {
-		JFrame wid = new JFrame(windowName);
+	private JToggleButton ExpertMode;	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+	private JToggleButton SimpleFormExpertMode;
+	
+	private JToggleButton SimpleFormStartMining;
+	private JTextField SimpleFormWalletAdress;
+	private JLabel SimpleFormWalletLabel;
+	private JButton SimpleFormStats;
+	private JTextArea SimpleFormOutput;
+	private JScrollPane scrollPane1;
+	private boolean CanStartMining;
+	
+	private RunMining MiningRuntime;
+	private Thread MiningThread;
+	private String TextWalletNotFound;
+	
+	public YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR() {
+		JFrame wid = new JFrame();
 		wid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		wid.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
 		ImageIcon img = new ImageIcon("logo.png");
 		wid.setIconImage(img.getImage());
-		Init(wid);
+		
+		JFrame wid_sf = new JFrame();
+		wid_sf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		wid_sf.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
+		ImageIcon img2 = new ImageIcon("logo.png");
+		wid_sf.setIconImage(img2.getImage());
+		
+		Init(wid,wid_sf);
 	}
 	
-	private void Init(final JFrame window) {
+	private void Init(final JFrame window, final JFrame simpleform) {
 		PoolDefault = "YENTEN-POOL";
 		 
 		int cores = Runtime.getRuntime().availableProcessors();
@@ -142,7 +176,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		String[] CoinsTypeList = new String[] {"YTN"};
 		
 		//createform
-		StartMining = new JButton();  
+		StartMining = new JToggleButton();  
 		DefaultSettings = new JButton();
 		AddPool = new JButton("+");
 		AddWallet = new JButton("+");
@@ -185,9 +219,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		Ping = new JLabel();
 		Solo = new JCheckBox();
 		Profiles = new JButton();
+		ExpertMode = new JToggleButton();
+		
 		
 		Solo.setEnabled(false);
 		Profiles.setEnabled(false);
+		CloseMiners.setEnabled(false);
+		
 		
 		WalletDefault = "Select or Add new Wallet/Username...";
 		
@@ -219,6 +257,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		Profiles.setText					("Profiles...");
 		PoolURLLabel.setText				("Mining URL");
 		CloseMiners.setText					("Close All Miners");
+		ExpertMode.setText					("ExpertMode");
+		
 		
 		PoolURLDefaultText = "You caan't change default pool name.";
 		PoolURLCustomPoolText = "Enter Pool URL to connect as stratum+tcp://pool.com:port";
@@ -229,6 +269,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		TextSaveDestination = "Save Destination...";
 		TextDeleteWallet = "Do you want delete your current wallet address - ";
 		TextDeletePool = "Do you want delete your current pool - ";
+		TextWalletNotFound = "Wallets not found. Please start wallet application and enter wallet adress in wallet address field.";
 		
 		ApportionCPU.setToolTipText("CPU Load will be apportioned evenly across all threads");
 		WalletAdress.setToolTipText("<html>Enter your Wallet Adress or your Worker Username<br>"
@@ -284,8 +325,40 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		AddPool.setIcon(null);
 		PoolURL.setDisabledTextColor(Color.black);
 		PoolURL.setBorder(BorderFactory.createLineBorder(Color.gray));
+		ExpertMode.setMargin(new Insets(2, 2, 2, 2));
+		ExpertMode.setBackground(new Color(204, 204, 204));
 		
+		NumberThreads.setSelectedItem(NumberCoresValues.length-1);
+		
+		//create simple form
+		SimpleFormStartMining = new JToggleButton();
+		SimpleFormWalletAdress = new JTextField();
+		SimpleFormExpertMode = new JToggleButton();
+		SimpleFormWalletLabel = new JLabel();
+		SimpleFormStats = new JButton();
+		SimpleFormOutput = new JTextArea();
+
+		SimpleFormStartMining.setText("Start Mining");
+		SimpleFormExpertMode.setText("Expert Mode");
+		SimpleFormWalletLabel.setText("Wallet");
+		SimpleFormWalletLabel.setLabelFor(SimpleFormWalletAdress);
+		SimpleFormStats.setText("Stats");
+		SimpleFormOutput.setText("Enter Wallet Address");
+
+		
+		
+		scrollPane1 = new JScrollPane();
+		scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane1.setViewportView(SimpleFormOutput);
+		SimpleFormOutput.setBackground(UIManager.getColor("Button.background"));
+		SimpleFormOutput.setEditable(false);
+		SimpleFormOutput.setBorder(null);
+		SimpleFormOutput.setAutoscrolls(false);
+		CanStartMining = true;
+				
 		 WindowInterfacePlacement(window);
+		 SimpleFormWindowPlacement(simpleform);
 		 
 		 //load settings
 		 SetDefaultPoolsList();
@@ -297,8 +370,12 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 LoadWalletsList();
 		 
 		 LoadPoolList();
-		 	        	
-		 AddAllEEventsListeners(window);
+		 	       
+		 
+		 ShowExpertMode(window, simpleform);
+		 LoadSettingsSimpleForm(window, simpleform);
+		 
+		 AddAllEEventsListeners(window, simpleform);
 		 
 	     AddUpdateElement(ShowCPU);
 		 AddUpdateElement(NoColor);
@@ -318,11 +395,324 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 AddUpdateElement(TimeStratum);		 
 		 
 	     UpdateCommand();
-
-
-		//final IcmpPingUtil test = new IcmpPingUtil ();
 	}
 
+	private void SimpleFormSetWallet(String wallet, JFrame win, JFrame simpleform) {
+		if ( ! wallet.equals("null") ) {
+			SimpleFormWalletAdress.setEditable(false);
+			SimpleFormWalletAdress.setText(wallet);
+			SimpleFormOutput.setText("Enter Wallet Address");
+		} else {
+			boolean isExpertMode = ProfilePrefs.getBoolean("expertmode", false);
+			if (isExpertMode == true) {
+				JOptionPane.showMessageDialog(win,
+					    TextWalletNotFound,
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(simpleform,
+						TextWalletNotFound,
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			}
+			SimpleFormWalletAdress.setEditable(true);
+			SimpleFormOutput.setText("Press Start");
+		}
+	}
+
+	private void ShowExpertMode(JFrame win, JFrame simpleform) {
+		boolean isExpertMode = ProfilePrefs.getBoolean("expertmode", false);
+		ExpertMode.setSelected(isExpertMode);
+		SimpleFormExpertMode.setSelected(isExpertMode);
+		win.setVisible(isExpertMode);
+		simpleform.setVisible( ! isExpertMode );
+		
+		if (isExpertMode == false) {
+			LoadSettingsSimpleForm(win, simpleform);
+			SaveSettings((String) Pool.getSelectedItem());
+		} else {
+			LoadLastPool();
+			SaveSettingsSimpleForm();
+		}
+	}
+
+	private void ToggleExpertMode() {
+		ProfilePrefs.putBoolean("expertmode", ! ProfilePrefs.getBoolean("expertmode", false));
+	}
+	
+	private void SaveSettingsSimpleForm() {
+		ProfilePrefs.put("simpleformwalletadress", SimpleFormWalletAdress.getText());
+	}
+
+	private void LoadSettingsSimpleForm(JFrame win,JFrame simplewin) {
+		String LoadedWallet = ProfilePrefs.get("simpleformwalletadress", "");
+		SimpleFormWalletAdress.setText( LoadedWallet );
+		SimpleFormOutput.setText("Press Start");
+		if (LoadedWallet.equals("")) {
+			SimpleFormSetWallet(FindWalletAdresses().split("@")[0] , win, simplewin);
+		} else {
+			SimpleFormWalletAdress.setEditable(false);
+		}
+		
+	}
+	
+	@SuppressWarnings("resource")
+	private String FindWalletAdresses() {
+		String DataDir = WindowsReqistry.readRegistry("HKEY_CURRENT_USER\\Software\\Yenten\\Yenten-Qt", "strDataDir");
+        
+        if (DataDir != null) {
+        	DataDir = DataDir.trim();
+            File walletdat1 = new File(DataDir+"\\wallet.dat"); 
+            File walletdat2 = new File(DataDir+"\\wallets\\wallet.dat"); 
+           
+            if (walletdat1.exists() == false && walletdat2.exists() == false) {
+            	return "null";
+            }
+            
+            File walletDat;
+            if (walletdat1.exists()) {
+            	walletDat = walletdat1;
+            } else {
+            	walletDat = walletdat2;
+            }
+            
+            try {
+	            String	result = null; //default
+	            
+	            BufferedReader br = new BufferedReader(new FileReader(walletDat)); 
+	            	            
+	            ArrayList<String> myList = new ArrayList<String>();
+	            try {     	
+	            	///инициализаци€
+	            	char[] buff = new char[7];
+	            	char[] adressstring = new char[54];
+	            	int symbol = 0;
+	            	//подготовка буфера
+	            	for (int i=0;i<7;i++) {
+	            		symbol = br.read();
+	            		buff[i] = ((char)symbol);
+	            	}
+	                String string = new String(buff);
+	                
+	                //читаем файл по байтово
+	                while (symbol != -1) {
+	                	symbol = br.read();
+	                	//сдвигаем буфер на 1 и заносим симввол в конец 
+	                	buff[0] = buff[1];
+	                	buff[1] = buff[2];
+	                	buff[2] = buff[3];
+	                	buff[3] = buff[4];
+	                	buff[4] = buff[5];
+	                	buff[5] = buff[6];
+	                	buff[6] = ((char)symbol);
+	                	string = new String(buff);
+	                	
+	                	//если найдена строчка с ключевого слова, возможно кошелек
+	                	if (string.indexOf("receive")!=-1) {
+	                		//читааем длину по размеру записи кошелька
+	                		for (int i=0;i<47;i++) {
+	                			adressstring[i] = (char) br.read();
+	                		}
+	                		String temp_wallet = new String(adressstring);
+	                		//если найдено второе ключевое слово - кошелек найден
+	                		if (temp_wallet.substring(5, 12).equals("purpose") ) {
+	                			myList.add(temp_wallet.substring(13).trim());
+	                		}
+	                	}
+	                }
+	                
+	                //формируем гЋист (список с адресами кошельков)
+					if (myList.size() > 0) {
+						result = "";
+						for (int i=0;i<myList.size();i++) {
+							result = result+myList.get(i);
+							if (i<myList.size()-1) {
+								result = result + "@";
+							}
+						}
+						return result;//возвращаем список кошельков разделенных @
+		            } else {
+		            	return "null";//если кошельков 0
+		            }
+				} catch (IOException e) {
+					return "null";//файл не открываетс€
+				} 
+          } catch (FileNotFoundException e) {
+            return "null";//файл не существует
+          }
+        } else {
+        	return "null";//если не найдена директори€
+        }
+	}
+	
+
+	private void UpdateStartMiningButtons(JFrame win,JFrame simplewin){
+		if (SimpleFormWalletAdress.getText().length()==34 | win.isVisible()) {
+			SimpleFormStartMining.setSelected(CanStartMining);
+			StartMining.setSelected(CanStartMining);
+			if (CanStartMining == true) {
+				SimpleFormStartMining.setText("Stop Mining");
+				StartMining.setText("Stop Mining");
+				SimpleFormOutput.setText("Mining started!");
+		        CanStartMining = false;
+			} else {
+				SimpleFormStartMining.setText("Start Mining");
+				StartMining.setText("Start Mining");
+				SimpleFormOutput.setText("Mining stoped. Press Start for continue");
+				CanStartMining = true;
+			}
+		} else {
+			SimpleFormStartMining.setSelected(false);
+			StartMining.setSelected(false);
+			JOptionPane.showMessageDialog((win.isVisible()?win:simplewin),
+	 			    "Please enter valid Wallet Address",
+	 			    "Error Wallet",
+	 			    JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	private void SimpleFormStartMiningAction(JFrame win,JFrame simplewin) {
+		if (SimpleFormWalletAdress.getText().length()==34) {
+			if (CanStartMining == true) {
+				//action
+				MiningRuntime = new RunMining();
+				MiningThread = new Thread(MiningRuntime);
+				MiningThread.start();
+			} else {
+				//stop mining
+				MiningRuntime.threadactive = false;
+				MiningThread.interrupt();
+				CloseMinersCommand(simplewin);
+			}
+		}
+	}
+	
+	class RunMining implements Runnable {
+		public boolean threadactive;
+	    @Override
+	    public void run() {
+	    	
+	    	try {
+	    		SimpleFormCreateBat("start_mining.bat");
+		   		String path="start_mining.bat";
+		   		Process p;
+		   		Runtime rt = Runtime.getRuntime();
+		   		p = rt.exec(path);
+	   		 String line = " ";
+	   		 InputStreamReader input = new InputStreamReader(p.getInputStream());
+	   		 
+	   		 BufferedReader buffer = new BufferedReader(input);
+	   		
+	   		 threadactive = true;
+				while (threadactive == true) {	
+					try {
+					if ((line = buffer.readLine()) != null) {
+						line = line.trim();
+						
+						if (line.indexOf("New")!=-1) {
+							line = line.substring(line.indexOf("New")-1,line.length()-4);
+							line = line.replaceAll("[^a-zA-Z0-9 .,:]", "");
+							//SimpleFormOutput
+							SimpleFormOutput.setText(line);
+							SimpleFormOutput.update(SimpleFormOutput.getGraphics());
+						}
+					}
+					
+					Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						input.close();
+						buffer.close();
+						p.destroyForcibly();
+						threadactive = false;
+					}
+				 }
+				input.close();
+				buffer.close();
+				p.destroyForcibly();
+				
+			} catch (IOException e) {
+				     
+				
+			}
+	    }
+	}
+	
+	private void StartMiningAction(JFrame win) {
+		if (CanStartMining == true) {
+			try {
+	 		  CreateBat("start_mining.bat");
+	 		  String path="cmd /c start start_mining.bat";
+	 		  Runtime rn=Runtime.getRuntime();
+	 		  rn.exec(path);
+	 		  if (BackgroundMode.isSelected()==true) {
+	 			 JOptionPane.showMessageDialog(win,
+				    TextMinerInBackground,
+				    "Warning",
+				    JOptionPane.WARNING_MESSAGE);
+	 		  }
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+		} else {
+			CloseMinersCommand(win);
+		}
+	}
+	
+	private void SimpleFormCreateBat(String FileNameBAT) throws IOException {
+		SaveSettingsSimpleForm();
+		
+		//make command
+		String CommandText = "";
+		
+		String MinerPath = "";
+		try {
+			MinerPath = "\"" + new File(".").getCanonicalPath() + "\\cpuminer-bin\\cpuminer-sse2.exe\" ";
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		CommandText = CommandText + MinerPath;
+		
+		CommandText = CommandText + "-o stratum+tcp://cpu-pool.com:63368 ";
+		
+		CommandText = CommandText + "-a yespowerR16 ";
+	
+		CommandText = CommandText + "-u " + SimpleFormWalletAdress.getText() + " ";
+						
+		CommandText = CommandText + "-T 1000 ";
+		
+		CommandText = CommandText + "-q ";
+					
+		CommandOutput = CommandText;
+		
+		File file=new File(FileNameBAT);
+		
+		
+		FileOutputStream fos = new FileOutputStream(file);
+		DataOutputStream dataOutputStream = new DataOutputStream(fos);
+				
+		dataOutputStream.writeBytes(System.getProperty("line.separator"));
+		
+		dataOutputStream.writeBytes(CommandOutput);
+				
+		dataOutputStream.close();
+	}
+	
+	private void OpenSimpleFormStatsURL() {
+		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+		    try {
+				Desktop.getDesktop().browse(new URI("http://cpu-pool.com/workers/"+SimpleFormWalletAdress.getText()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private void SetDefaultPoolsList() {
 		 String[][] DefaultPoolsList_t = {
 			//Name  URL  RegistrationURL pingpoolurl password walletor/username
@@ -375,15 +765,75 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 DefaultPoolsList = DefaultPoolsList_t;
 	}
 	
-	private void AddAllEEventsListeners(JFrame win) {
+	private void AddAllEEventsListeners(JFrame win,JFrame simplewin) {
 		  win.addWindowListener(new WindowAdapter() {
 	    	 @Override
 	    	 public void windowClosing(WindowEvent e) {
 	    		 SaveSettings((String) Pool.getSelectedItem());
+	    		 SaveSettingsSimpleForm();
+	    		 CanStartMining = true;
+	    		// CloseMinersCommand(win);
 	    	     System.exit(0);
 	    	 }
 	     });
 		  
+		 simplewin.addWindowListener(new WindowAdapter() {
+	    	 @Override
+	    	 public void windowClosing(WindowEvent e) {
+	    		 SaveSettings((String) Pool.getSelectedItem());
+	    		 SaveSettingsSimpleForm();
+	    		 CanStartMining = true;
+	    		 CloseMinersCommand(simplewin);
+	    	     System.exit(0);
+	    	 }
+	     });
+		  
+		 SimpleFormExpertMode.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+            	  	ToggleExpertMode();
+            	  	ShowExpertMode(win, simplewin);
+              }
+          });
+		 
+		 SimpleFormWalletAdress.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				  SaveSettingsSimpleForm();
+			  }
+			  public void removeUpdate(DocumentEvent e) {
+				  SaveSettingsSimpleForm();
+			  }
+			  public void insertUpdate(DocumentEvent e) {
+				  SaveSettingsSimpleForm();
+			  }
+		 });
+		 
+		 SimpleFormStats.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				 OpenSimpleFormStatsURL();
+			 }
+		 });
+		 
+		SimpleFormWalletAdress.addActionListener(new java.awt.event.ActionListener() {
+			  public void actionPerformed(ActionEvent event) {
+				  SaveSettingsSimpleForm();
+			  }
+		});
+		 
+		
+		SimpleFormStartMining.addActionListener(new java.awt.event.ActionListener() {
+			  public void actionPerformed(ActionEvent event) {
+					SimpleFormStartMiningAction(win,simplewin);
+					UpdateStartMiningButtons(win, simplewin);
+			  }
+		});
+		
+		 ExpertMode.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+            	  	ToggleExpertMode();
+            	  	ShowExpertMode(win, simplewin);
+              }
+          });
+		 
 		 Pool.addItemListener(new ItemListener() {
            public void itemStateChanged(ItemEvent e) {
         	   if(e.getStateChange() == ItemEvent.DESELECTED) {
@@ -403,6 +853,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 StartMining.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
            	  	StartMiningAction(win);
+           	  	UpdateStartMiningButtons( win, simplewin);
              }
          });
 		 
@@ -477,8 +928,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		
 	}
 
-
-
+	
 	protected void OpenRegistrationURL() {
 		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 		    try {
@@ -542,13 +992,59 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 	}
 	
+	private void SimpleFormWindowPlacement(JFrame win){
+		Container contentPane = win.getContentPane();    
+		win.setResizable(false);
+		 //simple form
+        GroupLayout layout = new GroupLayout(contentPane);
+        contentPane.setLayout(layout);
+		layout.setHorizontalGroup(
+			layout.createParallelGroup()
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(layout.createParallelGroup()
+						.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 311, GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(SimpleFormWalletLabel)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(SimpleFormWalletAdress, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE))
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(SimpleFormStartMining, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(SimpleFormStats, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE))
+						.addComponent(SimpleFormExpertMode))
+					.addGap(0, 0, 0))
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup()
+				.addGroup(layout.createSequentialGroup()
+					.addGap(9, 9, 9)
+					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(SimpleFormWalletAdress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(SimpleFormWalletLabel))
+					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(SimpleFormStartMining)
+						.addComponent(SimpleFormStats))
+					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+					.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+					.addComponent(SimpleFormExpertMode)
+					.addGap(10, 10, 10))
+		);
+		win.pack();
+        
+        win.setLocationRelativeTo(null);
+        win.setVisible(false);  
+	}
+	
 	private void WindowInterfacePlacement(JFrame window) {
 		Container contentPane = window.getContentPane();    
 		 window.setResizable(false);
 
-			GroupLayout contentPaneLayout = new GroupLayout(contentPane);
-			contentPane.setLayout(contentPaneLayout);
-			contentPaneLayout.setHorizontalGroup(
+		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+		contentPane.setLayout(contentPaneLayout);
+		contentPaneLayout.setHorizontalGroup(
 				contentPaneLayout.createParallelGroup()
 					.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
 						.addGap(5, 5, 5)
@@ -579,14 +1075,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 								.addGroup(contentPaneLayout.createParallelGroup()
 									.addGroup(contentPaneLayout.createSequentialGroup()
 										.addGroup(contentPaneLayout.createParallelGroup()
-											.addComponent(CPUPriority, 0, 202, Short.MAX_VALUE)
-											.addComponent(NumberThreads, 0, 202, Short.MAX_VALUE)
-											.addComponent(Password, GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-											.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
+											.addComponent(CPUPriority, 0, 200, Short.MAX_VALUE)
+											.addComponent(NumberThreads, 0, 200, Short.MAX_VALUE)
+											.addComponent(Password, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+											.addComponent(NamePC, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
 										.addGap(5, 5, 5)
 										.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-											.addComponent(Registration, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
-											.addComponent(Ping, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+											.addComponent(Registration, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+											.addComponent(Ping, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
 											.addComponent(ApportionCPU, GroupLayout.Alignment.LEADING)))
 									.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
 										.addComponent(WalletAdress, 0, 267, Short.MAX_VALUE)
@@ -600,18 +1096,6 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 								.addGroup(contentPaneLayout.createParallelGroup()
 									.addComponent(TimeStratum, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
 									.addComponent(AditionalParameters, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)))
-							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
-								.addComponent(StartMining, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(SaveBAT, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(DefaultSettings, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
-							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
-								.addComponent(CloseMiners, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(Benchmark)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(Profiles, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
 							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
 								.addComponent(PoolLabel)
 								.addGap(5, 5, 5)
@@ -633,10 +1117,24 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(AlghorytmLabel)
 								.addGap(5, 5, 5)
-								.addComponent(Alghorytm, 0, 156, Short.MAX_VALUE)))
+								.addComponent(Alghorytm, 0, 156, Short.MAX_VALUE))
+							.addGroup(GroupLayout.Alignment.LEADING, contentPaneLayout.createSequentialGroup()
+								.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+									.addComponent(ExpertMode, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(StartMining, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(contentPaneLayout.createParallelGroup()
+									.addGroup(contentPaneLayout.createSequentialGroup()
+										.addComponent(SaveBAT, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(DefaultSettings, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+									.addGroup(contentPaneLayout.createSequentialGroup()
+										.addComponent(Benchmark)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(Profiles, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))))
 						.addGap(5, 5, 5))
 			);
-			contentPaneLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {Benchmark, CloseMiners, SaveBAT, StartMining});
+			contentPaneLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {Benchmark, SaveBAT, StartMining});
 			contentPaneLayout.setVerticalGroup(
 				contentPaneLayout.createParallelGroup()
 					.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
@@ -711,19 +1209,19 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 							.addComponent(StartMining)
 							.addComponent(SaveBAT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(DefaultSettings))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addGap(5, 5, 5)
 						.addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-							.addComponent(CloseMiners)
+							.addComponent(ExpertMode)
 							.addComponent(Benchmark)
 							.addComponent(Profiles))
-						.addGap(8, 8, 8))
+						.addGap(10, 10, 10))
 			);
 			window.setSize(455, 435);
 			 
 	        window.pack();
 	        
 	        window.setLocationRelativeTo(null);
-	        window.setVisible(true);
+	        window.setVisible(false);  
 	}
 	
 	private String GetEscapedPathString(String inputPath) {
@@ -786,36 +1284,24 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 		dataOutputStream.close();
 	}
+	
 
 	private void CloseMinersCommand(JFrame win) {
 		try {
 		 		Runtime.getRuntime().exec("taskkill /F /FI \"IMAGENAME eq cpuminer*\"");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cmd.exe");
-		 		JOptionPane.showMessageDialog(win,
-	 			    "All your miners closed.",
-	 			    "Close Miners",
-	 			    JOptionPane.WARNING_MESSAGE);
+		 		if (CanStartMining == false) {
+			 		JOptionPane.showMessageDialog(win,
+		 			    "All your miners closed.",
+		 			    "Close Miners",
+		 			    JOptionPane.WARNING_MESSAGE);
+		 		}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}
 	
-	private void StartMiningAction(JFrame win) {
-		try {
- 		  CreateBat("start_mining.bat");
- 		  String path="cmd /c start start_mining.bat";
- 		  Runtime rn=Runtime.getRuntime();
- 		  rn.exec(path);
- 		  if (BackgroundMode.isSelected()==true) {
- 			 JOptionPane.showMessageDialog(win,
-			    TextMinerInBackground,
-			    "Warning",
-			    JOptionPane.WARNING_MESSAGE);
- 		  }
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
+
 	
 	private void StartBenchmark(JFrame win) {
 		try {
@@ -1069,6 +1555,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 
 		LoadLastPool();		
 	}
+	
+
 	
 	private void LoadLastPool() {
 		String LastPoolName = ProfilePrefs.get("lastpool", PoolDefault);
