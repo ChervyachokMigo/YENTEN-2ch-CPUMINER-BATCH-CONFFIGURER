@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_24" class="java.beans.XMLDecoder"> 
+ <object class="com.jformdesigner.model.FormModel"> 
+  <void property="contentType"> 
+   <string>form/swing</string> 
+  </void> 
+  <void property="root"> 
+   <object class="com.jformdesigner.model.FormRoot"> 
+    <void method="add"> 
+     <object class="com.jformdesigner.model.FormContainer"> 
+      <string>javax.swing.JPanel</string> 
+      <object class="com.jformdesigner.model.FormLayoutManager"> 
+       <class>org.jdesktop.layout.GroupLayout</class> 
+       <void method="setProperty"> 
+        <string>$horizontalGroup</string> 
+        <string>par l {seq {space :::p, par l {comp scrollPane1::l:p:311:p, seq l {comp SimpleFormWalletLabel:::p::p, space :::p, comp SimpleFormWalletAdress:::p:270:p}, seq l {comp SimpleFormStartMining:::p:168:p, space :::p, comp SimpleFormStats:::p:136:p}, comp SimpleFormExpertMode::l:p::p}, space :p:0:p}}</string> 
+       </void> 
+       <void method="setProperty"> 
+        <string>$verticalGroup</string> 
+        <string>par l {seq l {space :p:9:p, par b {comp SimpleFormWalletAdress::b:p::p, comp SimpleFormWalletLabel::b:p::p}, space :::p, par b {comp SimpleFormStartMining::b:p::p, comp SimpleFormStats::b:p::p}, space :::p, comp scrollPane1:::p::p:1, space :::p, comp SimpleFormExpertMode:::p::p:1, space :p:10:p}}</string> 
+       </void> 
+      </object> 
+      <void property="name"> 
+       <string>this</string> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Start Mining</string> 
+        </void> 
+        <void property="name"> 
+         <string>SimpleFormStartMining</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JTextField</string> 
+        <void property="name"> 
+         <string>SimpleFormWalletAdress</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JToggleButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Expert Mode</string> 
+        </void> 
+        <void property="name"> 
+         <string>SimpleFormExpertMode</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JLabel</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Wallet</string> 
+        </void> 
+        <void method="setProperty"> 
+         <string>labelFor</string> 
+         <object class="com.jformdesigner.model.FormReference"> 
+          <string>SimpleFormWalletAdress</string> 
+         </object> 
+        </void> 
+        <void property="name"> 
+         <string>SimpleFormWalletLabel</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JButton</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Stats</string> 
+        </void> 
+        <void property="name"> 
+         <string>SimpleFormStats</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormContainer"> 
+        <string>javax.swing.JScrollPane</string> 
+        <object class="com.jformdesigner.model.FormLayoutManager"> 
+         <class>javax.swing.JScrollPane</class> 
+        </object> 
+        <void property="name"> 
+         <string>scrollPane1</string> 
+        </void> 
+        <void method="add"> 
+         <object class="com.jformdesigner.model.FormComponent"> 
+          <string>javax.swing.JTextArea</string> 
+          <void method="setProperty"> 
+           <string>text</string> 
+           <string>Output</string> 
+          </void> 
+          <void method="setProperty"> 
+           <string>background</string> 
+           <object class="com.jformdesigner.model.SwingColor"> 
+            <string>Button.background</string> 
+           </object> 
+          </void> 
+          <void method="setProperty"> 
+           <string>editable</string> 
+           <boolean>false</boolean> 
+          </void> 
+          <void method="setProperty"> 
+           <string>border</string> 
+           <object class="com.jformdesigner.model.FormObject" field="NULL_VALUE"/> 
+          </void> 
+          <void method="setProperty"> 
+           <string>autoscrolls</string> 
+           <boolean>false</boolean> 
+          </void> 
+          <void property="name"> 
+           <string>SimpleFormOutput</string> 
+          </void> 
+         </object> 
+        </void> 
+       </object> 
+      </void> 
+     </object> 
+     <object class="com.jformdesigner.model.FormLayoutConstraints"> 
+      <null/> 
+      <void method="setProperty"> 
+       <string>location</string> 
+       <object class="java.awt.Point"> 
+        <int>420</int> 
+        <int>265</int> 
+       </object> 
+      </void> 
+      <void method="setProperty"> 
+       <string>size</string> 
+       <object class="java.awt.Dimension"> 
+        <int>335</int> 
+        <int>130</int> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 
