@@ -146,24 +146,27 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private Thread MiningThread;
 	private String TextWalletNotFound;
 	
+	private JFrame windowExpert;
+	private JFrame windowSimple;
+	
 	public YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR() {
-		JFrame wid = new JFrame();
-		wid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		wid.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
+		windowExpert = new JFrame();
+		windowExpert.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		windowExpert.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
 		ImageIcon img = new ImageIcon("logo.png");
-		wid.setIconImage(img.getImage());
+		windowExpert.setIconImage(img.getImage());
 		
-		JFrame wid_sf = new JFrame();
-		wid_sf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		wid_sf.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
+		windowSimple = new JFrame();
+		windowSimple.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		windowSimple.setTitle("YENTEN 2CH CPUMINER BATCH CONFIGURATOR");
 		ImageIcon img2 = new ImageIcon("logo.png");
-		wid_sf.setIconImage(img2.getImage());
+		windowSimple.setIconImage(img2.getImage());
 		
-		Init(wid,wid_sf);
+		Init();
 	}
 	
-	private void Init(final JFrame window, final JFrame simpleform) {
-		PoolDefault = "YENTEN-POOL";
+	private void Init() {
+		PoolDefault = "2CH POOL";
 		 
 		int cores = Runtime.getRuntime().availableProcessors();
 		String[] NumberCoresValues = new String[cores];
@@ -356,12 +359,16 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		SimpleFormOutput.setBorder(null);
 		SimpleFormOutput.setAutoscrolls(false);
 		CanStartMining = true;
-				
-		 WindowInterfacePlacement(window);
-		 SimpleFormWindowPlacement(simpleform);
+		
+		
+		
+		 WindowInterfacePlacement();
+		 SimpleFormWindowPlacement();
 		 
 		 //load settings
 		 SetDefaultPoolsList();
+		 
+		
 		 
 		 AppPrefs = Preferences.userRoot().node("cpu-miner-batch-configurator");
 		 ProfileName = AppPrefs.get("lastprofilename", "default");
@@ -372,10 +379,12 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 LoadPoolList();
 		 	       
 		 
-		 ShowExpertMode(window, simpleform);
-		 LoadSettingsSimpleForm(window, simpleform);
+		 ShowExpertMode();
+		 SaveSettingsSimpleForm();
 		 
-		 AddAllEEventsListeners(window, simpleform);
+		 new FindMiner();
+		 
+		 AddAllEEventsListeners();
 		 
 	     AddUpdateElement(ShowCPU);
 		 AddUpdateElement(NoColor);
@@ -397,7 +406,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	     UpdateCommand();
 	}
 
-	private void SimpleFormSetWallet(String wallet, JFrame win, JFrame simpleform) {
+	private void SimpleFormSetWallet(String wallet) {
 		if ( ! wallet.equals("null") ) {
 			SimpleFormWalletAdress.setEditable(false);
 			SimpleFormWalletAdress.setText(wallet);
@@ -405,12 +414,12 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		} else {
 			boolean isExpertMode = ProfilePrefs.getBoolean("expertmode", false);
 			if (isExpertMode == true) {
-				JOptionPane.showMessageDialog(win,
+				JOptionPane.showMessageDialog(windowExpert,
 					    TextWalletNotFound,
 					    "Warning",
 					    JOptionPane.WARNING_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(simpleform,
+				JOptionPane.showMessageDialog(windowSimple,
 						TextWalletNotFound,
 					    "Warning",
 					    JOptionPane.WARNING_MESSAGE);
@@ -420,15 +429,15 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 	}
 
-	private void ShowExpertMode(JFrame win, JFrame simpleform) {
+	private void ShowExpertMode() {
 		boolean isExpertMode = ProfilePrefs.getBoolean("expertmode", false);
 		ExpertMode.setSelected(isExpertMode);
 		SimpleFormExpertMode.setSelected(isExpertMode);
-		win.setVisible(isExpertMode);
-		simpleform.setVisible( ! isExpertMode );
+		windowExpert.setVisible(isExpertMode);
+		windowSimple.setVisible( ! isExpertMode );
 		
 		if (isExpertMode == false) {
-			LoadSettingsSimpleForm(win, simpleform);
+			LoadSettingsSimpleForm();
 			SaveSettings((String) Pool.getSelectedItem());
 		} else {
 			LoadLastPool();
@@ -441,21 +450,68 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	}
 	
 	private void SaveSettingsSimpleForm() {
-		ProfilePrefs.put("simpleformwalletadress", SimpleFormWalletAdress.getText());
-	}
-
-	private void LoadSettingsSimpleForm(JFrame win,JFrame simplewin) {
-		String LoadedWallet = ProfilePrefs.get("simpleformwalletadress", "");
-		SimpleFormWalletAdress.setText( LoadedWallet );
-		SimpleFormOutput.setText("Press Start");
-		if (LoadedWallet.equals("")) {
-			SimpleFormSetWallet(FindWalletAdresses().split("@")[0] , win, simplewin);
+		if (SimpleFormWalletAdress.getText().length()==34) {
+			ProfilePrefs.put("simpleformwalletadress", SimpleFormWalletAdress.getText());
+			SimpleFormStartMining.setEnabled(true);
 		} else {
-			SimpleFormWalletAdress.setEditable(false);
+			
+			SimpleFormStartMining.setEnabled(false);
+		}
+	}
+	
+	private void LoadSettingsSimpleForm() {
+		String LoadedWallet = ProfilePrefs.get("simpleformwalletadress", "");
+		if (LoadedWallet.length()==34) {
+			SimpleFormWalletAdress.setText( LoadedWallet );
+			SimpleFormOutput.setText("Press Start");
+			if (LoadedWallet.equals("")) {
+				SimpleFormSetWallet(FindWalletAdresses().split("@")[0]);
+			} else {
+				SimpleFormWalletAdress.setEditable(false);
+			}
 		}
 		
 	}
 	
+	class FindMiner implements Runnable {
+		public boolean threadactive;
+	    @Override
+	    public void run() {
+	    	
+	    	try {
+	    		Process p;
+	       		Runtime rt = Runtime.getRuntime();
+	       		p = rt.exec("tasklist | find \"cpuminer\"");
+	    		 InputStreamReader input = new InputStreamReader(p.getInputStream());
+	    		 
+	    		 BufferedReader buffer = new BufferedReader(input);
+	    		 String line = "";
+	    		 while ((line = buffer.readLine()) != null) {
+	    			 if (line.indexOf("exe")!=-1) {
+	    				 log("found");
+	    				 break;
+	    			 }
+	    		 }
+	   							
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					input.close();
+					buffer.close();
+					p.destroyForcibly();
+				}
+				
+				input.close();
+				buffer.close();
+				p.destroyForcibly();
+				
+			} catch (IOException e) {
+				     
+				
+			}
+	    }
+	}
+		
 	@SuppressWarnings("resource")
 	private String FindWalletAdresses() {
 		String DataDir = WindowsReqistry.readRegistry("HKEY_CURRENT_USER\\Software\\Yenten\\Yenten-Qt", "strDataDir");
@@ -546,8 +602,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	}
 	
 
-	private void UpdateStartMiningButtons(JFrame win,JFrame simplewin){
-		if (SimpleFormWalletAdress.getText().length()==34 | win.isVisible()) {
+	private void UpdateStartMiningButtons(){
+		
+		if (SimpleFormWalletAdress.getText().length()==34 | windowSimple.isVisible()) {
 			SimpleFormStartMining.setSelected(CanStartMining);
 			StartMining.setSelected(CanStartMining);
 			if (CanStartMining == true) {
@@ -564,14 +621,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		} else {
 			SimpleFormStartMining.setSelected(false);
 			StartMining.setSelected(false);
-			JOptionPane.showMessageDialog((win.isVisible()?win:simplewin),
+			JOptionPane.showMessageDialog((windowExpert.isVisible()?windowExpert:windowSimple),
 	 			    "Please enter valid Wallet Address",
 	 			    "Error Wallet",
 	 			    JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	
-	private void SimpleFormStartMiningAction(JFrame win,JFrame simplewin) {
+	private void SimpleFormStartMiningAction() {
 		if (SimpleFormWalletAdress.getText().length()==34) {
 			if (CanStartMining == true) {
 				//action
@@ -582,7 +639,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 				//stop mining
 				MiningRuntime.threadactive = false;
 				MiningThread.interrupt();
-				CloseMinersCommand(simplewin);
+				CloseMinersCommand();
 			}
 		}
 	}
@@ -637,7 +694,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	    }
 	}
 	
-	private void StartMiningAction(JFrame win) {
+	private void StartMiningAction() {
 		if (CanStartMining == true) {
 			try {
 	 		  CreateBat("start_mining.bat");
@@ -645,7 +702,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	 		  Runtime rn=Runtime.getRuntime();
 	 		  rn.exec(path);
 	 		  if (BackgroundMode.isSelected()==true) {
-	 			 JOptionPane.showMessageDialog(win,
+	 			 JOptionPane.showMessageDialog(windowExpert,
 				    TextMinerInBackground,
 				    "Warning",
 				    JOptionPane.WARNING_MESSAGE);
@@ -655,7 +712,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 			}
 			
 		} else {
-			CloseMinersCommand(win);
+			CloseMinersCommand();
 		}
 	}
 	
@@ -674,7 +731,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		
 		CommandText = CommandText + MinerPath;
 		
-		CommandText = CommandText + "-o stratum+tcp://cpu-pool.com:63368 ";
+		CommandText = CommandText + "-o stratum+tcp://2chpool.cc:63368 ";
 		
 		CommandText = CommandText + "-a yespowerR16 ";
 	
@@ -702,7 +759,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private void OpenSimpleFormStatsURL() {
 		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 		    try {
-				Desktop.getDesktop().browse(new URI("http://cpu-pool.com/workers/"+SimpleFormWalletAdress.getText()));
+				Desktop.getDesktop().browse(new URI("https://2chpool.cc/workers/"+SimpleFormWalletAdress.getText()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -716,6 +773,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private void SetDefaultPoolsList() {
 		 String[][] DefaultPoolsList_t = {
 			//Name  URL  RegistrationURL pingpoolurl password walletor/username
+			{ "2CH POOL" , "stratum+tcp://2chpool.cc:63368" , "No" , "2chpool.cc" , "" , "Wallet" },
 			{ "YENTEN-POOL" , "stratum+tcp://yenten-pool.info:63368", "No", "yenten-pool.info", "" , "Wallet" },
 			{ "CPU-POOL", "stratum+tcp://cpu-pool.com:63368", "No", "cpu-pool.com", "" , "Wallet" , "Wallet"  },
 			{ "RPLANT-POOL (varDiff 0.2) RUS", "stratum+tcp://stratum-ru.rplant.xyz:3382", "No", "stratum-ru.rplant.xyz", "" , "Wallet" },
@@ -765,8 +823,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 DefaultPoolsList = DefaultPoolsList_t;
 	}
 	
-	private void AddAllEEventsListeners(JFrame win,JFrame simplewin) {
-		  win.addWindowListener(new WindowAdapter() {
+	private void AddAllEEventsListeners() {
+		windowExpert.addWindowListener(new WindowAdapter() {
 	    	 @Override
 	    	 public void windowClosing(WindowEvent e) {
 	    		 SaveSettings((String) Pool.getSelectedItem());
@@ -777,13 +835,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	    	 }
 	     });
 		  
-		 simplewin.addWindowListener(new WindowAdapter() {
+		windowSimple.addWindowListener(new WindowAdapter() {
 	    	 @Override
 	    	 public void windowClosing(WindowEvent e) {
 	    		 SaveSettings((String) Pool.getSelectedItem());
 	    		 SaveSettingsSimpleForm();
 	    		 CanStartMining = true;
-	    		 CloseMinersCommand(simplewin);
+	    		 CloseMinersCommand();
 	    	     System.exit(0);
 	    	 }
 	     });
@@ -791,7 +849,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 SimpleFormExpertMode.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
             	  	ToggleExpertMode();
-            	  	ShowExpertMode(win, simplewin);
+            	  	ShowExpertMode();
               }
           });
 		 
@@ -822,15 +880,15 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		
 		SimpleFormStartMining.addActionListener(new java.awt.event.ActionListener() {
 			  public void actionPerformed(ActionEvent event) {
-					SimpleFormStartMiningAction(win,simplewin);
-					UpdateStartMiningButtons(win, simplewin);
+					SimpleFormStartMiningAction();
+					UpdateStartMiningButtons();
 			  }
 		});
 		
 		 ExpertMode.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
             	  	ToggleExpertMode();
-            	  	ShowExpertMode(win, simplewin);
+            	  	ShowExpertMode();
               }
           });
 		 
@@ -852,8 +910,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 
 		 StartMining.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
-           	  	StartMiningAction(win);
-           	  	UpdateStartMiningButtons( win, simplewin);
+           	  	StartMiningAction();
+           	  	UpdateStartMiningButtons();
              }
          });
 		 
@@ -865,13 +923,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 
 		 DelWallet.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 ShowDeleteWalletDialog(win);
+				 ShowDeleteWalletDialog();
 			 }
 		 });
 		 
 		 AddWallet.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 ShowDialogAddWalletAdress(win);
+				 ShowDialogAddWalletAdress();
 			 }
 		 });
 		 
@@ -884,7 +942,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 
 		 AddPool.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 ShowAddPoolDialog(win);
+				 ShowAddPoolDialog();
 				 SetDefaultSettings();
 				 SaveSettings((String) Pool.getSelectedItem());
 			 }
@@ -892,7 +950,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 
 		 DelPool.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 ShowDialogDeletePool(win);
+				 ShowDialogDeletePool();
 			 }
 		 });
 		 
@@ -910,19 +968,19 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		 	 
 		 CloseMiners.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 CloseMinersCommand(win);
+				 CloseMinersCommand();
 			 }
 		 });
 		 
 		 SaveBAT.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 SaveBATFile(win);
+				 SaveBATFile();
 			 }
 		 });
 		 
 		 Benchmark.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 StartBenchmark(win);
+				 StartBenchmark();
 			 }
 		 });
 		
@@ -992,9 +1050,9 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 	}
 	
-	private void SimpleFormWindowPlacement(JFrame win){
-		Container contentPane = win.getContentPane();    
-		win.setResizable(false);
+	private void SimpleFormWindowPlacement(){
+		Container contentPane = windowSimple.getContentPane();    
+		windowSimple.setResizable(false);
 		 //simple form
         GroupLayout layout = new GroupLayout(contentPane);
         contentPane.setLayout(layout);
@@ -1032,15 +1090,15 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 					.addComponent(SimpleFormExpertMode)
 					.addGap(10, 10, 10))
 		);
-		win.pack();
+		windowSimple.pack();
         
-        win.setLocationRelativeTo(null);
-        win.setVisible(false);  
+		windowSimple.setLocationRelativeTo(null);
+		windowSimple.setVisible(false);  
 	}
 	
-	private void WindowInterfacePlacement(JFrame window) {
-		Container contentPane = window.getContentPane();    
-		 window.setResizable(false);
+	private void WindowInterfacePlacement() {
+		Container contentPane = windowExpert.getContentPane();    
+		windowExpert.setResizable(false);
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
@@ -1216,12 +1274,12 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 							.addComponent(Profiles))
 						.addGap(10, 10, 10))
 			);
-			window.setSize(455, 435);
+			windowExpert.setSize(455, 435);
 			 
-	        window.pack();
+			windowExpert.pack();
 	        
-	        window.setLocationRelativeTo(null);
-	        window.setVisible(false);  
+			windowExpert.setLocationRelativeTo(null);
+			windowExpert.setVisible(false);  
 	}
 	
 	private String GetEscapedPathString(String inputPath) {
@@ -1246,9 +1304,11 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 				" ("+CoinType.getSelectedItem()+") ["+
 				NumberThreads.getSelectedItem()+" Threads] "+
 				CPUPriority.getSelectedItem()+" Priority"+
-				(DebugCheck.isSelected()?" -Debug mode":"")+
-				(AditionalParameters.getText().length()>0?" ":"")+
-				AditionalParameters.getText().trim();
+				(DebugCheck.isSelected()?" -Debug mode":"");
+		
+				if (AditionalParameters.getText().length()>0) {
+					Result += " "+AditionalParameters.getText().trim();
+				}
 	
 		return GetEscapedPathString(Result);
 	}
@@ -1286,12 +1346,12 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	}
 	
 
-	private void CloseMinersCommand(JFrame win) {
+	private void CloseMinersCommand() {
 		try {
 		 		Runtime.getRuntime().exec("taskkill /F /FI \"IMAGENAME eq cpuminer*\"");
 		 		Runtime.getRuntime().exec("taskkill /F /IM cmd.exe");
 		 		if (CanStartMining == false) {
-			 		JOptionPane.showMessageDialog(win,
+			 		JOptionPane.showMessageDialog(windowExpert,
 		 			    "All your miners closed.",
 		 			    "Close Miners",
 		 			    JOptionPane.WARNING_MESSAGE);
@@ -1303,14 +1363,14 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	
 
 	
-	private void StartBenchmark(JFrame win) {
+	private void StartBenchmark() {
 		try {
 			SaveSettings((String) Pool.getSelectedItem());
 			String path="cmd /c start \""+getTitle()+"\" " + CommandOutput + " --benchmark ";
 			Runtime rn=Runtime.getRuntime();
 	 		rn.exec(path);
 	 		 if (BackgroundMode.isSelected()==true) {
-	 			 JOptionPane.showMessageDialog(win,
+	 			 JOptionPane.showMessageDialog(windowExpert,
 	 				TextMinerInBackground,
 				    "Warning",
 				    JOptionPane.WARNING_MESSAGE);
@@ -1320,7 +1380,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 	}
 	
-	private void SaveBATFile(JFrame window) {
+	private void SaveBATFile() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(TextSaveDestination);   
 		fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -1328,7 +1388,7 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		fileChooser.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
 		fileChooser.setFileFilter(new FileNameExtensionFilter("bat","bat"));
 		
-		if(fileChooser.showSaveDialog(window) == JFileChooser.APPROVE_OPTION) {
+		if(fileChooser.showSaveDialog(windowExpert) == JFileChooser.APPROVE_OPTION) {
 		    String filename = fileChooser.getSelectedFile().getAbsolutePath();
 		    if ( ! filename.endsWith(".bat"))
 		        filename += ".bat";
@@ -1371,13 +1431,13 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		ProfilePrefs = AppPrefs.node(profile_name);
 	}
 	
-	private void ShowAddPoolDialog(JFrame window){
+	private void ShowAddPoolDialog(){
 	    JTextField NewPoolName = new JTextField();
 	    JComponent[] AddPoolInputField = new JComponent[] {
 			        new JLabel("New Pool Name"),
 			        NewPoolName
 			};
-	    int result = JOptionPane.showConfirmDialog(window, AddPoolInputField, "Add New Pool", JOptionPane.PLAIN_MESSAGE);
+	    int result = JOptionPane.showConfirmDialog(windowExpert, AddPoolInputField, "Add New Pool", JOptionPane.PLAIN_MESSAGE);
 	    	    
 	    if (result == JOptionPane.OK_OPTION && NewPoolName.getText().length()>0) {
 	        Pool.addItem(NewPoolName.getText());
@@ -1387,10 +1447,10 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	    
 	}
 	
-	private void ShowDialogAddWalletAdress(JFrame win) {
+	private void ShowDialogAddWalletAdress() {
 		String NewAdressName = "";
 	    
-	    String result = JOptionPane.showInputDialog(win,  "New Wallet/Username", NewAdressName );
+	    String result = JOptionPane.showInputDialog(windowExpert,  "New Wallet/Username", NewAdressName );
 	    	    
 	    if (result != null) {
 		    if (result.length()>0  ) {
@@ -1415,8 +1475,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		    
 	}
 	
-	private void ShowDeleteWalletDialog(JFrame win) {
-		int input = JOptionPane.showConfirmDialog(win, 
+	private void ShowDeleteWalletDialog() {
+		int input = JOptionPane.showConfirmDialog(windowExpert, 
                 TextDeleteWallet+WalletAdress.getSelectedItem(), "Delete Wallet ", 
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		if (input == 0 ) {
@@ -1424,8 +1484,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 		}
 	}
 	
-	private void ShowDialogDeletePool(JFrame win) {
-		int input = JOptionPane.showConfirmDialog(win, 
+	private void ShowDialogDeletePool() {
+		int input = JOptionPane.showConfirmDialog(windowExpert, 
                 TextDeletePool+Pool.getSelectedItem(), "Delete Pool ", 
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		if (input == 0 ) {
@@ -1653,6 +1713,8 @@ public class YENTEN_2CH_CPUMINER_BATCH_CONFIGURATOR {
 	private void SaveSettings(String LastPoolName) {	
 		//сохранение выбранного профиля в будущем
 		AppPrefs.put("lastprofilename", "default");
+		
+		UpdateCommand();
 		
 		if (LastPoolName == null | LastPoolName == "" | PoolDeleted==LastPoolName) LastPoolName = PoolDefault;
 		ProfilePrefs.put("lastpool", LastPoolName);
